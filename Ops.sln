@@ -4,9 +4,20 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{8ED67A50-116
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{42A894F8-BF47-43D2-9A25-3E35CE133E6E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ops.Web", "src\Ops.Web\Ops.Web.csproj", "{1B99CF5A-159F-4434-AAAA-996C7B50A507}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1B99CF5A-159F-4434-AAAA-996C7B50A507} = {8ED67A50-116A-4250-BBAB-EED6377244B9}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1B99CF5A-159F-4434-AAAA-996C7B50A507}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B99CF5A-159F-4434-AAAA-996C7B50A507}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B99CF5A-159F-4434-AAAA-996C7B50A507}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B99CF5A-159F-4434-AAAA-996C7B50A507}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

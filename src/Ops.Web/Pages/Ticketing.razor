@@ -1,0 +1,35 @@
+﻿<h3>Ticketing</h3>
+
+@if (!Tickets.Any())
+{
+  <p>
+    <em>Loading...</em>
+  </p>
+}
+else
+{
+  <table class="table">
+    <thead>
+    <tr>
+      <th>Ticket id
+      <input class="form-control" type="text" placeholder="Filter..." @bind="FilterId">
+      </th>
+      <th>Status</th>
+      <th>Created</th>
+      <th>Last modified</th>
+      <th><button class="btn btn-primary" @onclick="@(async () => await Filter())">Filter</button></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var ticket in Tickets)
+    {
+      <tr>
+        <td>@ticket.Id</td>
+        <td>@ticket.Status</td>
+        <td>@ticket.Created.ToString("D")</td>
+        <td>@ticket.LastModified.ToString("D")</td>
+      </tr>
+    }
+    </tbody>
+  </table>
+}
