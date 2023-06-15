@@ -1,27 +1,78 @@
 ﻿namespace Ops.Web.Pages
 {
     using Microsoft.AspNetCore.Components;
+    using Microsoft.AspNetCore.Mvc.Filters;
 
     public partial class Ticketing
     {
-        [Inject]
-        private TicketingApiProxy TicketingApiProxy { get; set; }
-        private List<Ticket> Tickets { get; set; } = new List<Ticket>();
-        private string? FilterId { get; set; }
+        private bool TicketsLoaded = false;
 
+        public static readonly IDictionary<string, int> SinceMapping = new Dictionary<string, int>
+        {
+            { "Today", 0 },
+            { "3 days", 3 },
+            { "1 week", 7 },
+            { "2 weeks", 14 },
+            { "1 month", 30 }
+        };
 
+        [Inject] private TicketingApiProxy TicketingApiProxy { get; set; }
+
+        private bool HasNextPage { get; set; } = true;
+        private List<Ticket> Tickets { get; set; } = new();
+        private TicketsFilter TicketsFilter { get; set; }
+
+        private bool DialogIsOpen { get; set; }
+        private Guid? SelectedTicketId { get; set; }
         protected override async Task OnInitializedAsync()
         {
-            Tickets = await TicketingApiProxy.GetTickets(TicketsFilter.Empty);
+            TicketsFilter = TicketsFilter.Empty;
+            await LoadTickets();
+        }
+
+        private async Task LoadTickets()
+        {
+            TicketsLoaded = false;
+            Tickets.Clear();
+
+            await Task.Delay(TimeSpan.FromMilliseconds(new Random().Next(200, 2500)));
+
+            Tickets.AddRange(await TicketingApiProxy.GetTickets(TicketsFilter));
+            HasNextPage = Tickets.Count >= TicketsFilter.Limit;
+            TicketsLoaded = true;
         }
 
         private async Task Filter()
         {
-            Tickets.Clear();
-            await Task.Delay(5000);
-            var ticketId = !string.IsNullOrWhiteSpace(FilterId) ? Guid.Parse(FilterId.Trim()) : null as Guid?;
-            var filter = new TicketsFilter(ticketId, null, null);
-            Tickets = await TicketingApiProxy.GetTickets(filter);
+            TicketsFilter.CurrentPage = 1;
+            await LoadTickets();
+        }
+
+        private async Task LoadPage(int pageNumber)
+        {
+            TicketsFilter.CurrentPage = pageNumber;
+            await LoadTickets();
+        }
+
+        private void StatusFilterOnInput(string status, bool isChecked)
+        {
+            TicketsFilter.Status[status] = isChecked;
+        }
+
+        private void OpenDialog(Guid ticketId)
+        {
+            SelectedTicketId = ticketId;
+            DialogIsOpen = true;
+        }
+
+        private async Task PlaceTicketInError(bool submit)
+        {
+            if (SelectedTicketId is not null && submit)
+            {
+                await TicketingApiProxy.PlaceTicketInError(SelectedTicketId.Value);
+            }
+
+            DialogIsOpen = false;
         }
     }
 
@@ -31,7 +82,7 @@
 
         public TicketingApiProxy()
         {
-            Tickets = SeedTickets();
+            Tickets = SeedTickets(150);
         }
 
         public async Task<List<Ticket>> GetTickets(TicketsFilter ticketsFilter)
@@ -43,82 +94,92 @@
 
             IEnumerable<Ticket> tickets = Tickets;
 
-            if (ticketsFilter.Status is not null)
+            if (ticketsFilter.Status.Any(x => x.Value))
             {
-                tickets = tickets.Where(x => x.Status == ticketsFilter.Status);
+                tickets = tickets.Where(x =>
+                    ticketsFilter.Status.Where(y => y.Value).Select(z => z.Key).Contains(x.Status));
             }
 
-            if (ticketsFilter.Since is not null)
+            if (ticketsFilter.AmountOfDaysSince is not null)
             {
                 tickets = tickets.Where(x => x.Created >= ticketsFilter.Since);
             }
 
-            return await Task.FromResult(tickets.ToList());
+            const int limit = 50;
+            var offset = (ticketsFilter.CurrentPage - 1) * limit;
+
+            return await Task.FromResult(
+                tickets
+                    .OrderBy(x => x.Created)
+                    .Skip(offset)
+                    .Take(limit)
+                    .ToList());
         }
 
-        private static List<Ticket> SeedTickets()
+        public async Task PlaceTicketInError(Guid ticketId)
         {
-            return new List<Ticket>()
+            var ticket = Tickets.Single(x => x.Id == ticketId);
+            ticket.Status = "Error";
+
+            await Task.CompletedTask;
+        }
+
+        private static List<Ticket> SeedTickets(int count)
+        {
+            var statuses = new[] { "Created", "Pending", "Completed", "Error" };
+            var dateRange = 30; // days
+
+            var randomizer = new Random();
+
+            Ticket CreateTicket(string status, int daysToSubtract)
             {
-                new()
+                var created = DateTime.UtcNow.Subtract(TimeSpan.FromDays(daysToSubtract));
+
+                return new()
                 {
                     Id = Guid.NewGuid(),
-                    Status = "Created",
-                    LastModified = DateTime.UtcNow,
-                    Created = DateTime.UtcNow.AddMinutes(-5)
-                },
-                new Ticket()
-                {
-                    Id = Guid.NewGuid(),
-                    Status = "Pending",
-                    LastModified = DateTime.UtcNow.AddMinutes(10),
-                    Created = DateTime.UtcNow.AddMinutes(5)
-                },
-                new Ticket()
-                {
-                    Id = Guid.NewGuid(),
-                    Status = "Cancelled",
-                    LastModified = DateTime.UtcNow.AddHours(1),
-                    Created = DateTime.UtcNow.AddMinutes(20)
-                },
-                new Ticket()
-                {
-                    Id = Guid.NewGuid(),
-                    Status = "Created",
-                    LastModified = DateTime.UtcNow,
-                    Created = DateTime.UtcNow.AddMinutes(-5)
-                },
-                new Ticket()
-                {
-                    Id = Guid.NewGuid(),
-                    Status = "Completed",
-                    LastModified = DateTime.UtcNow.AddDays(1),
-                    Created = DateTime.UtcNow.AddMinutes(300)
-                },
-                new Ticket()
-                {
-                    Id = Guid.NewGuid(),
-                    Status = "Created",
-                    LastModified = DateTime.UtcNow,
-                    Created = DateTime.UtcNow.AddMinutes(-5)
-                }
-            };
+                    Status = status,
+                    Created = created,
+                    LastModified = status == "Created" ? created : created.AddMilliseconds(548)
+                };
+            }
+
+            return Enumerable
+                .Range(1, count)
+                .Select(_ => CreateTicket(
+                    statuses[randomizer.Next(0, statuses.Length - 1)],
+                    randomizer.Next(1, dateRange)))
+                .ToList();
         }
     }
 
     public class TicketsFilter
     {
-        public static readonly TicketsFilter Empty = new TicketsFilter(null, null, null);
+        public static TicketsFilter Empty => new TicketsFilter(null, null, 1);
+        public const int Limit = 50;
 
         public Guid? Id { get; set; }
-        public string? Status { get; set; }
-        public DateTime? Since { get; set; }
+        public IDictionary<string, bool> Status { get; set; }
+        public int? AmountOfDaysSince { get; set; }
 
-        public TicketsFilter(Guid? id, string? status, DateTime? since)
+        public int CurrentPage { get; set; }
+
+        public DateTime? Since => AmountOfDaysSince.HasValue
+            ? DateTimeOffset.Now.Date.Subtract(TimeSpan.FromDays(AmountOfDaysSince.Value))
+            : null;
+
+        public TicketsFilter(Guid? id, int? amountOfDaysSince, int currentPage)
         {
             Id = id;
-            Status = status;
-            Since = since;
+            Status = new Dictionary<string, bool>
+            {
+                { "Created", false },
+                { "Pending", false },
+                { "Error", false },
+                { "Completed", false }
+            };
+            AmountOfDaysSince = amountOfDaysSince;
+            CurrentPage = currentPage;
         }
     }
 

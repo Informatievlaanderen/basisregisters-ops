@@ -1,6 +1,3 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using Ops.Web.Data;
 using Ops.Web.Pages;
 
 var builder = WebApplication.CreateBuilder(args);

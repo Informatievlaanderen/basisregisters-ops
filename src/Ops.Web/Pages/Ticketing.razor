@@ -1,6 +1,6 @@
 ﻿<h3>Ticketing</h3>
 
-@if (!Tickets.Any())
+@if (!TicketsLoaded)
 {
   <p>
     <em>Loading...</em>
@@ -8,16 +8,43 @@
 }
 else
 {
+  <Pagination
+    CurrentPage="TicketsFilter.CurrentPage"
+    HasNextPage="HasNextPage"
+    Navigate="LoadPage">
+  </Pagination>
   <table class="table">
     <thead>
     <tr>
-      <th>Ticket id
-      <input class="form-control" type="text" placeholder="Filter..." @bind="FilterId">
+      <th>
+        Ticket id
+        <input class="form-control" type="text" placeholder="Filter..." @bind="TicketsFilter.Id">
       </th>
-      <th>Status</th>
-      <th>Created</th>
+      <th>
+        Status
+        @foreach (var status in TicketsFilter.Status)
+        {
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" @onchange="args => StatusFilterOnInput(status.Key, (bool)args.Value)" checked=@status.Value>
+            <label class="form-check-label">@status.Key</label>
+          </div>
+        }
+      </th>
+      <th>
+        Created
+        <select class="form-control" @bind="TicketsFilter.AmountOfDaysSince">
+          <option value=""></option>
+          @foreach (var item in SinceMapping)
+          {
+            <option value="@item.Value">@item.Key</option>
+          }
+        </select>
+      </th>
       <th>Last modified</th>
-      <th><button class="btn btn-primary" @onclick="@(async () => await Filter())">Filter</button></th>
+      <th>
+        <button class="btn btn-primary" @onclick="@(async () => await Filter())">Filter</button>
+        <button class="btn btn-primary" @onclick="@(() => ++TicketsFilter.CurrentPage)">Filter</button>
+      </th>
     </tr>
     </thead>
     <tbody>
@@ -27,9 +54,20 @@ else
         <td>@ticket.Id</td>
         <td>@ticket.Status</td>
         <td>@ticket.Created.ToString("D")</td>
-        <td>@ticket.LastModified.ToString("D")</td>
+        <td>@ticket.LastModified.ToString("s")</td>
+        <td>
+          <a class="btn btn-warning" @onclick="() => OpenDialog(ticket.Id)">Error</a>
+        </td>
       </tr>
     }
     </tbody>
   </table>
+
+  @if (DialogIsOpen)
+  {
+    <Dialog Caption="Place ticket in error"
+            Message="Place ticket in error"
+            OnClose="@PlaceTicketInError">
+    </Dialog>
+  }
 }

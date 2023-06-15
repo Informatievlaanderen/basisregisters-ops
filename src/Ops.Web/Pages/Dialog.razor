@@ -1,0 +1,29 @@
+﻿<div
+  class="modal fade show"
+  id="myModal"
+  style="display:block; background-color: rgba(10,10,10,.8);"
+  aria-modal="true"
+  role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">@Caption</h4>
+        <button type="button" class="close"
+                @onclick="@Cancel">
+          &times
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>@Message</p>
+      </div>
+      <div class="modal-footer">
+            <button type="button" class="btn btn-primary" @onclick=@Ok>
+              Ok
+            </button>
+            <button type="button" class="btn btn-warning" @onclick="@Cancel">
+              Cancel
+            </button>
+      </div>
+    </div>
+  </div>
+</div>
