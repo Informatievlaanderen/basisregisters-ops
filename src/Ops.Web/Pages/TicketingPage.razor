@@ -1,4 +1,6 @@
-﻿<h3>Ticketing</h3>
+﻿@page "/ticketing"
+
+<h3>Ticketing</h3>
 
 @if (!TicketsLoaded)
 {
@@ -18,7 +20,7 @@ else
     <tr>
       <th>
         Ticket id
-        <input class="form-control" type="text" placeholder="Filter..." @bind="TicketsFilter.Id">
+       <!--<input class="form-control" type="text" placeholder="Filter..." @bind="TicketsFilter.">-->
       </th>
       <th>
         Status
@@ -51,12 +53,12 @@ else
     @foreach (var ticket in Tickets)
     {
       <tr>
-        <td>@ticket.Id</td>
+        <td>@ticket.TicketId</td>
         <td>@ticket.Status</td>
         <td>@ticket.Created.ToString("D")</td>
         <td>@ticket.LastModified.ToString("s")</td>
         <td>
-          <a class="btn btn-warning" @onclick="() => OpenDialog(ticket.Id)">Error</a>
+          <a class="btn btn-warning" @onclick="() => OpenDialog(ticket.TicketId)">Error</a>
         </td>
       </tr>
     }

@@ -1,11 +1,34 @@
-using Ops.Web.Pages;
+using Ops.Web;
+using Ops.Web.Ticketing;
+using TicketingService.Proxy.HttpProxy;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication
+    .CreateBuilder(args)
+    .AddOptions<TicketingOptions>();
+
+
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<TicketingApiProxy>();
+
+// add configuration
+builder.Configuration
+    .AddJsonFile("appsettings.json")
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName.ToLowerInvariant()}.json", optional: true, reloadOnChange: false)
+    .AddJsonFile($"appsettings.{Environment.MachineName.ToLowerInvariant()}.json", optional: true, reloadOnChange: false)
+    .AddEnvironmentVariables()
+    .AddCommandLine(args);
+
+var ticketingOptions = builder.GetAppOptions<TicketingOptions>();
+
+//builder.Services.AddSingleton<ITicketingApiProxy, FakeTicketingApiProxy>();
+builder.Services.AddHttpProxyTicketing(ticketingOptions.BaseUrl);
+builder.Services.AddHttpClient<ITicketingApiProxy, TicketingMonitoringApiProxy>(c =>
+{
+    c.BaseAddress = new Uri(ticketingOptions.BaseUrl.TrimEnd('/'));
+});
+
 
 var app = builder.Build();
 
