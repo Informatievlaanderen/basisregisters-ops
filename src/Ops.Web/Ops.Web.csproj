@@ -14,6 +14,7 @@
       <PackageReference Include="Be.Vlaanderen.Basisregisters.TicketingService.Abstractions" Version="1.11.3" />
       <PackageReference Include="Be.Vlaanderen.Basisregisters.TicketingService.Proxy.HttpProxy" Version="1.11.3" />
       <PackageReference Include="Flurl" Version="3.0.7" />
+      <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid" Version="8.0.0-preview.5.23302.2" />
     </ItemGroup>
 
 </Project>
