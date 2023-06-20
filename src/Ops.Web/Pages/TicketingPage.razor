@@ -1,4 +1,5 @@
 ﻿@page "/ticketing"
+@using TicketingService.Abstractions
 
 <h3>Ticketing</h3>
 
@@ -15,12 +16,16 @@ else
     HasNextPage="HasNextPage"
     Navigate="LoadPage">
   </Pagination>
+  @if (@errorMessage is not null)
+  {
+    <p class="alert alert-danger" role="alert">@errorMessage</p>
+  }
   <table class="table">
     <thead>
     <tr>
       <th>
         Ticket id
-       <!--<input class="form-control" type="text" placeholder="Filter..." @bind="TicketsFilter.">-->
+       <input class="form-control" type="text" placeholder="Filter..." @bind="TicketsFilter.TicketId">
       </th>
       <th>
         Status
@@ -45,7 +50,6 @@ else
       <th>Last modified</th>
       <th>
         <button class="btn btn-primary" @onclick="@(async () => await Filter())">Filter</button>
-        <button class="btn btn-primary" @onclick="@(() => ++TicketsFilter.CurrentPage)">Filter</button>
       </th>
     </tr>
     </thead>
@@ -58,7 +62,8 @@ else
         <td>@ticket.Created.ToString("D")</td>
         <td>@ticket.LastModified.ToString("s")</td>
         <td>
-          <a class="btn btn-warning" @onclick="() => OpenDialog(ticket.TicketId)">Error</a>
+          <a class="btn btn-info" @onclick="() => OpenDialog(ticket.TicketId, TicketStatus.Complete)">Complete</a>
+          <a class="btn btn-warning" @onclick="() => OpenDialog(ticket.TicketId, TicketStatus.Error)">Error</a>
         </td>
       </tr>
     }
@@ -67,9 +72,10 @@ else
 
   @if (DialogIsOpen)
   {
-    <Dialog Caption="Place ticket in error"
-            Message="Place ticket in error"
-            OnClose="@PlaceTicketInError">
+    <Dialog
+            Caption=@Dialog.Caption
+            Message=@Dialog.Message
+            OnClose=@Dialog.OnClose>
     </Dialog>
   }
 }

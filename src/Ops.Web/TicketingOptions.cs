@@ -5,5 +5,8 @@ using System.ComponentModel.DataAnnotations;
 public class TicketingOptions
 {
     [Required]
-    public string BaseUrl { get; set; }
+    public string MonitoringUrl { get; set; }
+
+    [Required]
+    public string TicketingServiceUrl { get; set; }
 }

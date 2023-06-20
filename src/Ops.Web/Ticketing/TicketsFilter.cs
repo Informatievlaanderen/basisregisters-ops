@@ -6,6 +6,7 @@ using Flurl;
 
 public class TicketsFilter
 {
+    public string? TicketId { get; set; }
     public static TicketsFilter Empty => new TicketsFilter(null, 1);
     public const int Limit = 2;
 

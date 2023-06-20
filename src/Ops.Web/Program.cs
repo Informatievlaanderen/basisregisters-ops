@@ -22,12 +22,12 @@ builder.Configuration
 
 var ticketingOptions = builder.GetAppOptions<TicketingOptions>();
 
-//builder.Services.AddSingleton<ITicketingApiProxy, FakeTicketingApiProxy>();
-builder.Services.AddHttpProxyTicketing(ticketingOptions.BaseUrl);
-builder.Services.AddHttpClient<ITicketingApiProxy, TicketingMonitoringApiProxy>(c =>
-{
-    c.BaseAddress = new Uri(ticketingOptions.BaseUrl.TrimEnd('/'));
-});
+builder.Services.AddSingleton<ITicketingApiProxy, FakeTicketingApiProxy>();
+builder.Services.AddHttpProxyTicketing(ticketingOptions.TicketingServiceUrl);
+// builder.Services.AddHttpClient<ITicketingApiProxy, TicketingMonitoringApiProxy>(c =>
+// {
+//     c.BaseAddress = new Uri(ticketingOptions.MonitoringUrl.TrimEnd('/'));
+// });
 
 
 var app = builder.Build();

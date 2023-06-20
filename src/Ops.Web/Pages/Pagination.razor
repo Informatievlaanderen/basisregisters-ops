@@ -3,7 +3,6 @@
   <button class="btn btn-primary" @onclick="@(async () => await NavigatePage(CurrentPage - 1))"> &lt; </button>
 }
 
-
 @foreach (var pageNumber in Enumerable.Range(1, CurrentPage))
 {
   if (pageNumber == CurrentPage)

@@ -17,9 +17,11 @@ public partial class TicketingPage
         { "1 month", 30 }
     };
 
-
     [Inject] private ITicketing Ticketing { get; set; }
     [Inject] private ITicketingApiProxy TicketingMonitoringApiProxy { get; set; }
+
+    private Dialog Dialog { get; set; } = new Dialog();
+    private TicketStatus DialogStatus { get; set; }
 
     private bool HasNextPage { get; set; } = true;
     private List<Ticket> Tickets { get; set; } = new();
@@ -27,6 +29,8 @@ public partial class TicketingPage
 
     private bool DialogIsOpen { get; set; }
     private Guid? SelectedTicketId { get; set; }
+    private string? errorMessage { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         TicketsFilter = TicketsFilter.Empty;
@@ -38,9 +42,26 @@ public partial class TicketingPage
         TicketsLoaded = false;
         Tickets.Clear();
 
-        //await Task.Delay(TimeSpan.FromMilliseconds(new Random().Next(200, 2500)));
-
-        Tickets.AddRange(await TicketingMonitoringApiProxy.GetAll(TicketsFilter, CancellationToken.None));
+        if (TicketsFilter.TicketId is not null)
+        {
+            if (Guid.TryParse(TicketsFilter.TicketId, out Guid ticketId))
+            {
+                var ticket = await Ticketing.Get(ticketId, CancellationToken.None);
+                if (ticket is not null)
+                {
+                    Tickets.Add(ticket);
+                    TicketsFilter.TicketId = null;
+                }
+            }
+            else
+            {
+                errorMessage = "Is not a valid ticketId";
+            }
+        }
+        else
+        {
+            Tickets.AddRange(await TicketingMonitoringApiProxy.GetAll(TicketsFilter, CancellationToken.None));
+        }
 
         HasNextPage = Tickets.Count >= TicketsFilter.Limit;
         TicketsLoaded = true;
@@ -63,17 +84,44 @@ public partial class TicketingPage
         TicketsFilter.Status[status] = isChecked;
     }
 
-    private void OpenDialog(Guid ticketId)
+    private void OpenDialog(Guid ticketId, TicketStatus ticketStatus)
     {
+        DialogStatus = ticketStatus;
+        Dialog.Message = $"TicketId: {ticketId}";
+
+        if (ticketStatus== TicketStatus.Error)
+        {
+            Dialog.Caption = "Put ticket in error";
+        }
+        else if (DialogStatus == TicketStatus.Complete)
+        {
+            Dialog.Caption = "Put ticket in complete";
+        }
+
+        Dialog.OnClose = new EventCallback<bool>(this, (Func<bool,Task>) PlaceTicketInStatus);
         SelectedTicketId = ticketId;
         DialogIsOpen = true;
     }
 
-    private async Task PlaceTicketInError(bool submit)
+    private async Task PlaceTicketInStatus(bool submit)
     {
-        if (SelectedTicketId is not null && submit)
+        if (SelectedTicketId is not null && submit && DialogStatus == TicketStatus.Error)
         {
-            //await FakeTicketingApiProxy.PlaceTicketInError(SelectedTicketId.Value);
+            if (DialogStatus == TicketStatus.Error)
+            {
+                await Ticketing.Error(
+                    SelectedTicketId.Value,
+                    new TicketError("Placed in error via Ops user.",
+                        string.Empty),
+                    CancellationToken.None);
+            }
+            else if (DialogStatus == TicketStatus.Complete)
+            {
+                await Ticketing.Complete(
+                    SelectedTicketId.Value,
+                    new TicketResult(),
+                    CancellationToken.None);
+            }
         }
 
         DialogIsOpen = false;
