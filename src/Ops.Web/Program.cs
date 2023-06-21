@@ -6,8 +6,6 @@ var builder = WebApplication
     .CreateBuilder(args)
     .AddOptions<TicketingOptions>();
 
-
-
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
@@ -22,13 +20,12 @@ builder.Configuration
 
 var ticketingOptions = builder.GetAppOptions<TicketingOptions>();
 
-builder.Services.AddSingleton<ITicketingApiProxy, FakeTicketingApiProxy>();
+// builder.Services.AddSingleton<ITicketingApiProxy, FakeTicketingApiProxy>();
 builder.Services.AddHttpProxyTicketing(ticketingOptions.TicketingServiceUrl);
-// builder.Services.AddHttpClient<ITicketingApiProxy, TicketingMonitoringApiProxy>(c =>
-// {
-//     c.BaseAddress = new Uri(ticketingOptions.MonitoringUrl.TrimEnd('/'));
-// });
-
+builder.Services.AddHttpClient<ITicketingApiProxy, TicketingApiProxy>(c =>
+{
+    c.BaseAddress = new Uri(ticketingOptions.MonitoringUrl.TrimEnd('/'));
+});
 
 var app = builder.Build();
 

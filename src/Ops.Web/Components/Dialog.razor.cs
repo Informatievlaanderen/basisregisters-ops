@@ -1,4 +1,4 @@
-﻿namespace Ops.Web.Pages
+﻿namespace Ops.Web.Components
 {
     using Microsoft.AspNetCore.Components;
 

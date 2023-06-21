@@ -1,10 +1,6 @@
 ﻿namespace Ops.Web.Pages;
 
-using Microsoft.AspNetCore.Components;
-using Ticketing;
-using TicketingService.Abstractions;
-
-public partial class GrbPage
+public partial class GrbJobs
 {
     private bool JobsLoaded = false;
     private List<Job> Jobs { get; set; } = new();

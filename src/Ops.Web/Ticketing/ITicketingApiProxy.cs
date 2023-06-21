@@ -4,5 +4,5 @@ using TicketingService.Abstractions;
 
 public interface ITicketingApiProxy
 {
-    Task<IEnumerable<Ticket>> GetAll(TicketsFilter filter, CancellationToken ct);
+    Task<IEnumerable<Ticket>> Get(TicketsFilter filter, CancellationToken ct);
 }

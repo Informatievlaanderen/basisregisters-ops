@@ -7,10 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Components\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="Be.Vlaanderen.Basisregisters.TicketingService.Abstractions" Version="1.11.3" />
       <PackageReference Include="Be.Vlaanderen.Basisregisters.TicketingService.Proxy.HttpProxy" Version="1.11.3" />
       <PackageReference Include="Flurl" Version="3.0.7" />
