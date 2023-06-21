@@ -1,8 +1,8 @@
-﻿@page "/grbjobs"
+﻿@page "/grbjobs/{jobId:guid}/records"
 @using Ops.Web.Components;
 
 
-<h3>Grb Jobs</h3>
+<h3>Grb Job Records</h3>
 
 @if (!JobsLoaded)
 {
@@ -49,6 +49,7 @@ else
         <th>
           <button class="btn btn-primary" @onclick="@(async () => await Filter())">Filter</button>
         </th>
+        <th></th>
       </tr>
       </thead>
       <tbody>
@@ -62,9 +63,8 @@ else
           <td>
             @if (!string.IsNullOrWhiteSpace(job.TicketUrl))
             {
-              <a href="@job.TicketUrl" target="_blank">View ticket</a> @:|
+              <a href="@job.TicketUrl" target="_blank">View ticket</a>
             }
-            <a href="@($"grbjobs/{job.JobId}/records")">View job records</a>
           </td>
           @* <td> *@
           @*   <a class="btn btn-info" @onclick="() => OpenDialog(ticket.TicketId, TicketStatus.Complete)">Complete</a> *@

@@ -20,10 +20,14 @@ public class FakeTicketingApiProxy : ITicketingApiProxy
 
         IEnumerable<Ticket> tickets = Tickets;
 
-        if (filter.Status.Any(x => x.Value))
+        if (filter.Statuses.Any(x => x.Value))
         {
-            tickets = tickets.Where(x =>
-                filter.Status.Where(y => y.Value).Select(z => z.Key).Contains(x.Status));
+            tickets = tickets
+                .Where(x =>
+                    filter.Statuses
+                        .Where(y => y.Value)
+                        .Select(z => z.Key)
+                        .Contains(x.Status));
         }
 
         if (filter.Since is not null)
@@ -52,7 +56,7 @@ public class FakeTicketingApiProxy : ITicketingApiProxy
     private static List<Ticket> SeedTickets(int count)
     {
         var statuses = new[] { TicketStatus.Created, TicketStatus.Pending, TicketStatus.Complete, TicketStatus.Error };
-        var dateRange = 30; // days
+        const int dateRange = 30; // days
 
         var randomizer = new Random();
 

@@ -34,14 +34,13 @@ public class TicketingApiProxy : ITicketingApiProxy
 
         if (filter.Since.HasValue)
         {
-            location= location.SetQueryParam("fromDate", filter.Since.Value.ToString("s"));
+            location = location.SetQueryParam("fromDate", filter.Since.Value.ToString("s"));
         }
 
-        location = location.SetQueryParam("statuses", filter.Status.Where(x => x.Value).Select(x => (int)x.Key));
-        location = location.SetQueryParam("offset", (filter.CurrentPage-1) * TicketsFilter.Limit);
+        location = location.SetQueryParam("statuses", filter.Statuses.Where(x => x.Value).Select(x => (int)x.Key));
+        location = location.SetQueryParam("offset", (filter.CurrentPage - 1) * TicketsFilter.Limit);
         location = location.SetQueryParam("limit", TicketsFilter.Limit);
 
-        var result =  await _httpClient.GetFromJsonAsync<IEnumerable<Ticket>>(location, _jsonSerializerOptions, ct) ?? Enumerable.Empty<Ticket>();
-        return result;
+        return (await _httpClient.GetFromJsonAsync<IEnumerable<Ticket>>(location, _jsonSerializerOptions, ct))!;
     }
 }

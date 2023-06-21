@@ -15,14 +15,14 @@ public class TicketsFilter
         set => _ticketId = value.Trim();
     }
 
-    public IDictionary<TicketStatus, bool> Status { get; }
+    public IDictionary<TicketStatus, bool> Statuses { get; }
     public DateTime? Since { get; set; }
     public int CurrentPage { get; set; }
 
 
     private TicketsFilter(int currentPage)
     {
-        Status = new Dictionary<TicketStatus, bool>
+        Statuses = new Dictionary<TicketStatus, bool>
         {
             { TicketStatus.Created, false },
             { TicketStatus.Pending, false },

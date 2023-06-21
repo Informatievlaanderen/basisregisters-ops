@@ -3,11 +3,12 @@
 using Jobs;
 using Microsoft.AspNetCore.Components;
 
-public partial class GrbJobs
+public partial class GrbJobRecords
 {
     private bool JobsLoaded;
 
     [Inject] private IJobsApiProxy JobsApiProxy { get; set; }
+    [Parameter] public Guid JobId { get; set; }
 
     private List<Job> Jobs { get; } = new();
     private JobsFilter JobsFilter { get; set; }

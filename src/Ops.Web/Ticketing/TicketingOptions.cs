@@ -1,4 +1,4 @@
-﻿namespace Ops.Web;
+﻿namespace Ops.Web.Ticketing;
 
 using System.ComponentModel.DataAnnotations;
 

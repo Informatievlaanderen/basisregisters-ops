@@ -1,4 +1,5 @@
 using Ops.Web;
+using Ops.Web.Jobs;
 using Ops.Web.Ticketing;
 using TicketingService.Proxy.HttpProxy;
 
@@ -19,13 +20,19 @@ builder.Configuration
     .AddCommandLine(args);
 
 var ticketingOptions = builder.GetAppOptions<TicketingOptions>();
-
 // builder.Services.AddSingleton<ITicketingApiProxy, FakeTicketingApiProxy>();
 builder.Services.AddHttpProxyTicketing(ticketingOptions.TicketingServiceUrl);
 builder.Services.AddHttpClient<ITicketingApiProxy, TicketingApiProxy>(c =>
 {
     c.BaseAddress = new Uri(ticketingOptions.MonitoringUrl.TrimEnd('/'));
 });
+
+var jobsOptions = builder.GetAppOptions<JobsOptions>();
+builder.Services.AddSingleton<IJobsApiProxy, FakeJobsApiProxy>();
+// builder.Services.AddHttpClient<IJobsApiProxy, JobsApiProxy>(c =>
+// {
+//     c.BaseAddress = new Uri(jobsOptions.ApiUrl.TrimEnd('/'));
+// });
 
 var app = builder.Build();
 

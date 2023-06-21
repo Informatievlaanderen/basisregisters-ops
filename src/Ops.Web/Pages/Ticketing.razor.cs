@@ -10,7 +10,7 @@ public partial class Ticketing
 
     [Inject] private ITicketingApiProxy TicketingApiProxy { get; set; }
 
-    private List<Ticket> Tickets { get; set; } = new();
+    private List<Ticket> Tickets { get; } = new();
     private TicketsFilter TicketsFilter { get; set; }
     private bool HasNextPage { get; set; } = true;
     private string? ErrorMessage { get; set; }
@@ -29,7 +29,7 @@ public partial class Ticketing
 
     private void UpdateStatusFilter(TicketStatus status, bool isChecked)
     {
-        TicketsFilter.Status[status] = isChecked;
+        TicketsFilter.Statuses[status] = isChecked;
     }
 
     private async Task LoadPage(int pageNumber)
