@@ -3,10 +3,13 @@
     public class FakeJobsApiProxy : IJobsApiProxy
     {
         private List<Job> Jobs { get; }
+        private Dictionary<Guid, List<JobRecord>> JobRecords { get; }
 
         public FakeJobsApiProxy()
         {
-            Jobs = SeedJobs(150);
+            var seed = SeedJobs(150);
+            Jobs = seed.jobs;
+            JobRecords = seed.jobRecords;
         }
 
         public async Task<IEnumerable<Job>> GetJobs(JobsFilter filter, CancellationToken ct)
@@ -43,9 +46,41 @@
                     .ToList());
         }
 
-        private static List<Job> SeedJobs(int count)
+        public Task<IEnumerable<JobRecord>> GetJobRecords(JobRecordsFilter filter, CancellationToken ct)
         {
-            var statuses = Enum.GetValues(typeof(JobStatus)).OfType<JobStatus>().ToArray();
+            IEnumerable<JobRecord> jobRecords = JobRecords[filter.JobId];
+
+            if (!string.IsNullOrWhiteSpace(filter.JobRecordId))
+            {
+                return Task.FromResult(
+                    new[] { jobRecords.Single(x => x.Id == Guid.Parse(filter.JobRecordId)) }.AsEnumerable()
+                );
+            }
+
+            if (filter.Statuses.Any(x => x.Value))
+            {
+                jobRecords = jobRecords
+                    .Where(x =>
+                        filter.Statuses
+                            .Where(y => y.Value)
+                            .Select(z => z.Key)
+                            .Contains(x.Status));
+            }
+
+            var offset = (filter.CurrentPage - 1) * JobRecordsFilter.Limit;
+
+            return Task.FromResult(
+                jobRecords
+                    .OrderBy(x => x.RecordNumber)
+                    .Skip(offset)
+                    .Take(JobRecordsFilter.Limit));
+        }
+
+        private static (List<Job> jobs, Dictionary<Guid, List<JobRecord>> jobRecords) SeedJobs(int count)
+        {
+            var jobStatuses = Enum.GetValues(typeof(JobStatus)).OfType<JobStatus>().ToArray();
+            var jobRecordStatuses = Enum.GetValues(typeof(JobRecordStatus)).OfType<JobRecordStatus>().ToArray();
+
             const int dateRange = 30; // days
 
             var randomizer = new Random();
@@ -64,12 +99,46 @@
                 };
             }
 
-            return Enumerable
+            JobRecord CreateJobRecord(
+                int recordNumber,
+                JobRecordStatus jobRecordStatus,
+                DateTimeOffset versionDate)
+            {
+                return new JobRecord
+                {
+                    Id = Guid.NewGuid(),
+                    RecordNumber = recordNumber,
+                    Status = jobRecordStatus,
+                    ErrorMessage = jobRecordStatus is JobRecordStatus.Warning or JobRecordStatus.Error
+                        or JobRecordStatus.ErrorResolved
+                        ? "Some error happend"
+                        : null,
+                    GrId = recordNumber * 3 + 1000000,
+                    TicketId = jobRecordStatus != JobRecordStatus.Created ? Guid.NewGuid() : null,
+                    VersionDate = versionDate
+                };
+            }
+
+            var jobs = Enumerable
                 .Range(1, count)
                 .Select(_ => CreateJob(
-                    statuses[randomizer.Next(0, statuses.Length - 1)],
+                    jobStatuses[randomizer.Next(0, jobStatuses.Length - 1)],
                     randomizer.Next(1, dateRange)))
                 .ToList();
+
+            var jobRecords = jobs
+                .Where(job => job.Status != JobStatus.Created && job.Status != JobStatus.Cancelled)
+                .ToDictionary(
+                    job => job.JobId,
+                    job => Enumerable
+                        .Range(1, randomizer.Next(30, 300))
+                        .Select(recordNumber => CreateJobRecord(
+                            recordNumber,
+                            jobRecordStatuses[randomizer.Next(0, jobRecordStatuses.Length - 1)],
+                            job.LastChanged.AddMilliseconds(randomizer.Next(100, 2000))))
+                        .ToList());
+
+            return new(jobs, jobRecords);
         }
     }
 }

@@ -1,10 +1,10 @@
 ﻿@page "/grbjobs/{jobId:guid}/records"
 @using Ops.Web.Components;
+@using Ops.Web.Jobs;
 
+<h3>Grb job @JobId records</h3>
 
-<h3>Grb Job Records</h3>
-
-@if (!JobsLoaded)
+@if (!JobRecordsLoaded)
 {
   <p>
     <em>Loading...</em>
@@ -13,7 +13,7 @@
 else
 {
   <Pagination
-    CurrentPage="JobsFilter.CurrentPage"
+    CurrentPage="JobRecordsFilter.CurrentPage"
     HasNextPage="HasNextPage"
     Navigate="LoadPage">
   </Pagination>
@@ -28,12 +28,14 @@ else
       <thead>
       <tr>
         <th>
-          Job id
-          <input class="form-control" type="text" placeholder="Filter..." @bind="JobsFilter.JobId">
+          Job record id
+          <input class="form-control" type="text" placeholder="Filter..." @bind="JobRecordsFilter.JobRecordId">
         </th>
+        <th>Record number</th>
+        <th>Grar ID</th>
         <th>
           Status
-          @foreach (var (key, value) in JobsFilter.Statuses)
+          @foreach (var (key, value) in JobRecordsFilter.Statuses)
           {
             <div class="form-check">
               <input type="checkbox" class="form-check-input" @onchange="args => UpdateStatusFilter(key, (bool)args.Value)" checked=@value>
@@ -42,10 +44,8 @@ else
           }
         </th>
         <th>
-          Created
-          <input class="form-control" type="datetime-local" @bind="JobsFilter.Since">
+          Version date
         </th>
-        <th>Last changed</th>
         <th>
           <button class="btn btn-primary" @onclick="@(async () => await Filter())">Filter</button>
         </th>
@@ -53,19 +53,14 @@ else
       </tr>
       </thead>
       <tbody>
-      @foreach (var job in Jobs)
+      @foreach (var jobRecord in JobRecords)
       {
         <tr>
-          <td>@job.JobId</td>
-          <td>@job.Status</td>
-          <td>@job.Created.ToString("s")</td>
-          <td>@job.LastChanged.ToString("s")</td>
-          <td>
-            @if (!string.IsNullOrWhiteSpace(job.TicketUrl))
-            {
-              <a href="@job.TicketUrl" target="_blank">View ticket</a>
-            }
-          </td>
+          <td>@jobRecord.Id</td>
+          <td>@jobRecord.RecordNumber</td>
+          <td>@jobRecord.GrId</td>
+          <td>@jobRecord.Status</td>
+          <td>@jobRecord.VersionDate.ToString("s")</td>
           @* <td> *@
           @*   <a class="btn btn-info" @onclick="() => OpenDialog(ticket.TicketId, TicketStatus.Complete)">Complete</a> *@
           @*   <a class="btn btn-warning" @onclick="() => OpenDialog(ticket.TicketId, TicketStatus.Error)">Error</a> *@

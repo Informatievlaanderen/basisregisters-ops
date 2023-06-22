@@ -3,6 +3,6 @@
     public interface IJobsApiProxy
     {
         Task<IEnumerable<Job>> GetJobs(JobsFilter filter, CancellationToken ct);
-        // GetJobRecords
+        Task<IEnumerable<JobRecord>> GetJobRecords(JobRecordsFilter filter, CancellationToken ct);
     }
 }

@@ -5,55 +5,47 @@ using Microsoft.AspNetCore.Components;
 
 public partial class GrbJobRecords
 {
-    private bool JobsLoaded;
+    private bool JobRecordsLoaded;
 
     [Inject] private IJobsApiProxy JobsApiProxy { get; set; }
     [Parameter] public Guid JobId { get; set; }
 
-    private List<Job> Jobs { get; } = new();
-    private JobsFilter JobsFilter { get; set; }
+    private List<JobRecord> JobRecords { get; } = new();
+    private JobRecordsFilter JobRecordsFilter { get; set; }
     private bool HasNextPage { get; set; } = true;
     private string? ErrorMessage { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        JobsFilter = JobsFilter.Default;
+        JobRecordsFilter = new JobRecordsFilter(JobId);
         await LoadJobs();
     }
 
     private async Task Filter()
     {
-        JobsFilter.CurrentPage = 1;
+        JobRecordsFilter.CurrentPage = 1;
         await LoadJobs();
     }
 
-    private void UpdateStatusFilter(JobStatus status, bool isChecked)
+    private void UpdateStatusFilter(JobRecordStatus status, bool isChecked)
     {
-        JobsFilter.Statuses[status] = isChecked;
+        JobRecordsFilter.Statuses[status] = isChecked;
     }
 
     private async Task LoadPage(int pageNumber)
     {
-        JobsFilter.CurrentPage = pageNumber;
+        JobRecordsFilter.CurrentPage = pageNumber;
         await LoadJobs();
     }
 
     private async Task LoadJobs()
     {
-        JobsLoaded = false;
-        Jobs.Clear();
+        JobRecordsLoaded = false;
+        JobRecords.Clear();
 
-        if (!string.IsNullOrWhiteSpace(JobsFilter.JobId) && !Guid.TryParse(JobsFilter.JobId, out _))
-        {
-            ErrorMessage = "Invalid ticket id specified";
-        }
-        else
-        {
-            Jobs.AddRange(await JobsApiProxy.GetJobs(JobsFilter, CancellationToken.None));
-        }
+        JobRecords.AddRange(await JobsApiProxy.GetJobRecords(JobRecordsFilter, CancellationToken.None));
 
-        HasNextPage = Jobs.Count >= JobsFilter.Limit;
-        JobsLoaded = true;
+        HasNextPage = JobRecords.Count >= JobRecordsFilter.Limit;
+        JobRecordsLoaded = true;
     }
-
 }

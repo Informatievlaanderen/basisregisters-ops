@@ -2,7 +2,6 @@
 {
     using Flurl;
     using Ticketing;
-    using TicketingService.Abstractions;
 
     public class JobsApiProxy : IJobsApiProxy
     {
@@ -33,6 +32,11 @@
             location = location.SetQueryParam("limit", TicketsFilter.Limit);
 
             return (await _httpClient.GetFromJsonAsync<IEnumerable<Job>>(location, ct))!;
+        }
+
+        public Task<IEnumerable<JobRecord>> GetJobRecords(JobRecordsFilter filter, CancellationToken ct)
+        {
+            throw new NotImplementedException();
         }
     }
 }
