@@ -1,5 +1,7 @@
 ﻿namespace Ops.Web.Jobs;
 
+using Grb;
+
 public class JobsFilter
 {
     public const int Limit = 50;
@@ -13,7 +15,6 @@ public class JobsFilter
         set => _jobId = value.Trim();
     }
 
-    public DateTimeOffset? Since { get; set; }
     public IDictionary<JobStatus, bool> Statuses { get; }
     public int CurrentPage { get; set; }
 

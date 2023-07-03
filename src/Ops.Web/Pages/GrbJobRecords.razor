@@ -1,6 +1,6 @@
 ﻿@page "/grbjobs/{jobId:guid}/records"
 @using Ops.Web.Components;
-@using Ops.Web.Jobs;
+@using Grb
 
 <h3>Grb job @JobId records</h3>
 
@@ -29,7 +29,6 @@ else
       <tr>
         <th>
           Job record id
-          <input class="form-control" type="text" placeholder="Filter..." @bind="JobRecordsFilter.JobRecordId">
         </th>
         <th>Record number</th>
         <th>Grar ID</th>
@@ -47,6 +46,9 @@ else
           Version date
         </th>
         <th>
+          Ticket
+        </th>
+        <th>
           <button class="btn btn-primary" @onclick="@(async () => await Filter())">Filter</button>
         </th>
         <th></th>
@@ -62,6 +64,12 @@ else
           <td>@jobRecord.Status</td>
           <td>@jobRecord.VersionDate.ToString("s")</td>
           <td>
+            @if (jobRecord.TicketUrl is not null)
+            {
+              <a href="@jobRecord.TicketUrl.ToString()" target="_blank">View ticket</a>
+            }
+          </td>
+          <td>
             @if (jobRecord.Status == JobRecordStatus.Error)
             {
               <a class="btn btn-info" @onclick="() => OpenDialog(jobRecord)">View Error</a>
@@ -76,10 +84,10 @@ else
   @if (DialogIsOpen)
   {
     <Dialog
-            Caption=@Dialog.Caption
-            Message=@Dialog.Message
-            SubmitButtonText="Resolve error"
-            OnClose=@Dialog.OnClose>
+      Caption=@Dialog.Caption
+      Message=@Dialog.Message
+      SubmitButtonText="Resolve error"
+      OnClose=@Dialog.OnClose>
     </Dialog>
   }
 }

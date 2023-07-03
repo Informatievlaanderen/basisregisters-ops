@@ -1,9 +1,12 @@
 ﻿namespace Ops.Web.Jobs
 {
+    using Grb;
+    using Grb.Building.Api.Abstractions.Responses;
+
     public class FakeJobsApiProxy : IJobsApiProxy
     {
-        private List<Job> Jobs { get; }
-        private Dictionary<Guid, List<JobRecord>> JobRecords { get; }
+        private List<JobResponse> Jobs { get; }
+        private Dictionary<Guid, List<JobRecordResponse>> JobRecords { get; }
 
         public FakeJobsApiProxy()
         {
@@ -12,14 +15,14 @@
             JobRecords = seed.jobRecords;
         }
 
-        public async Task<IEnumerable<Job>> GetJobs(JobsFilter filter, CancellationToken ct)
+        public async Task<IEnumerable<JobResponse>> GetJobs(JobsFilter filter, CancellationToken ct)
         {
             if (!string.IsNullOrWhiteSpace(filter.JobId))
             {
-                return new[] { Jobs.Single(x => x.JobId == Guid.Parse(filter.JobId)) };
+                return new[] { Jobs.Single(x => x.Id == Guid.Parse(filter.JobId)) };
             }
 
-            IEnumerable<Job> jobs = Jobs;
+            IEnumerable<JobResponse> jobs = Jobs;
 
             if (filter.Statuses.Any(x => x.Value))
             {
@@ -29,11 +32,6 @@
                             .Where(y => y.Value)
                             .Select(z => z.Key)
                             .Contains(x.Status));
-            }
-
-            if (filter.Since is not null)
-            {
-                jobs = jobs.Where(x => x.Created >= filter.Since);
             }
 
             var offset = (filter.CurrentPage - 1) * JobsFilter.Limit;
@@ -46,16 +44,9 @@
                     .ToList());
         }
 
-        public Task<IEnumerable<JobRecord>> GetJobRecords(JobRecordsFilter filter, CancellationToken ct)
+        public Task<IEnumerable<JobRecordResponse>> GetJobRecords(JobRecordsFilter filter, CancellationToken ct)
         {
-            IEnumerable<JobRecord> jobRecords = JobRecords[filter.JobId];
-
-            if (!string.IsNullOrWhiteSpace(filter.JobRecordId))
-            {
-                return Task.FromResult(
-                    new[] { jobRecords.Single(x => x.Id == Guid.Parse(filter.JobRecordId)) }.AsEnumerable()
-                );
-            }
+            IEnumerable<JobRecordResponse> jobRecords = JobRecords[filter.JobId];
 
             if (filter.Statuses.Any(x => x.Value))
             {
@@ -76,7 +67,7 @@
                     .Take(JobRecordsFilter.Limit));
         }
 
-        private static (List<Job> jobs, Dictionary<Guid, List<JobRecord>> jobRecords) SeedJobs(int count)
+        private static (List<JobResponse> jobs, Dictionary<Guid, List<JobRecordResponse>> jobRecords) SeedJobs(int count)
         {
             var jobStatuses = Enum.GetValues(typeof(JobStatus)).OfType<JobStatus>().ToArray();
             var jobRecordStatuses = Enum.GetValues(typeof(JobRecordStatus)).OfType<JobRecordStatus>().ToArray();
@@ -85,38 +76,30 @@
 
             var randomizer = new Random();
 
-            Job CreateJob(JobStatus status, int daysToSubtract)
+            JobResponse CreateJob(JobStatus status, int daysToSubtract)
             {
                 var created = DateTime.UtcNow.Subtract(TimeSpan.FromDays(daysToSubtract));
 
-                return new Job
-                {
-                    JobId = Guid.NewGuid(),
-                    Status = status,
-                    Created = created,
-                    LastChanged = status == JobStatus.Created ? created : created.AddMilliseconds(548),
-                    TicketUrl = status == JobStatus.Created ? null : "http://google.com"
-                };
+                var job = new JobResponse(Guid.NewGuid(), new Uri("https://google.com"), status, created, created, new Uri("https://google.com"));
+                return job;
             }
 
-            JobRecord CreateJobRecord(
+            JobRecordResponse CreateJobRecord(
                 int recordNumber,
                 JobRecordStatus jobRecordStatus,
                 DateTimeOffset versionDate)
             {
-                return new JobRecord
-                {
-                    Id = Guid.NewGuid(),
-                    RecordNumber = recordNumber,
-                    Status = jobRecordStatus,
-                    ErrorMessage = jobRecordStatus is JobRecordStatus.Warning or JobRecordStatus.Error
+                return new JobRecordResponse(
+                    recordNumber,
+                    recordNumber + 1000,
+                    recordNumber * 3 + 1000000,
+                    jobRecordStatus != JobRecordStatus.Created ? new Uri("https://google.com") : null,
+                    jobRecordStatus,
+                    jobRecordStatus is JobRecordStatus.Warning or JobRecordStatus.Error
                         or JobRecordStatus.ErrorResolved
-                        ? "Some error happend"
+                        ? "Some error occured"
                         : null,
-                    GrId = recordNumber * 3 + 1000000,
-                    TicketId = jobRecordStatus != JobRecordStatus.Created ? Guid.NewGuid() : null,
-                    VersionDate = versionDate
-                };
+                    versionDate);
             }
 
             var jobs = Enumerable
@@ -129,7 +112,7 @@
             var jobRecords = jobs
                 .Where(job => job.Status != JobStatus.Created && job.Status != JobStatus.Cancelled)
                 .ToDictionary(
-                    job => job.JobId,
+                    job => job.Id,
                     job => Enumerable
                         .Range(1, randomizer.Next(30, 300))
                         .Select(recordNumber => CreateJobRecord(

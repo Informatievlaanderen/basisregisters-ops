@@ -1,5 +1,6 @@
 ﻿@page "/grbjobs"
-@using Ops.Web.Components;
+@using Grb
+@using Ops.Web.Components
 
 
 <h3>Grb jobs</h3>
@@ -43,7 +44,6 @@ else
         </th>
         <th>
           Created
-          <input class="form-control" type="datetime-local" @bind="JobsFilter.Since">
         </th>
         <th>Last changed</th>
         <th>
@@ -55,21 +55,20 @@ else
       @foreach (var job in Jobs)
       {
         <tr>
-          <td>@job.JobId</td>
+          <td>@job.Id</td>
           <td>@job.Status</td>
           <td>@job.Created.ToString("s")</td>
           <td>@job.LastChanged.ToString("s")</td>
           <td>
-            @if (!string.IsNullOrWhiteSpace(job.TicketUrl))
+            @if (job.TicketUrl is not null)
             {
-              <a href="@job.TicketUrl" target="_blank">View ticket</a> @:|
+              <a href="@job.TicketUrl.ToString()" target="_blank">View ticket</a> @:|
             }
-            <a href="@($"grbjobs/{job.JobId}/records")">View job records</a>
+            @if (job.Status != JobStatus.Created && job.Status != JobStatus.Cancelled)
+            {
+              <a href="@($"grbjobs/{job.Id}/records")">View job records</a>
+            }
           </td>
-          @* <td> *@
-          @*   <a class="btn btn-info" @onclick="() => OpenDialog(ticket.TicketId, TicketStatus.Complete)">Complete</a> *@
-          @*   <a class="btn btn-warning" @onclick="() => OpenDialog(ticket.TicketId, TicketStatus.Error)">Error</a> *@
-          @* </td> *@
         </tr>
       }
       </tbody>

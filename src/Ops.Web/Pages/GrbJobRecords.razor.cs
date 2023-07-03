@@ -1,6 +1,8 @@
 ﻿namespace Ops.Web.Pages;
 
 using Components;
+using Grb;
+using Grb.Building.Api.Abstractions.Responses;
 using Jobs;
 using Microsoft.AspNetCore.Components;
 
@@ -11,7 +13,7 @@ public partial class GrbJobRecords
     [Inject] private IJobsApiProxy JobsApiProxy { get; set; }
     [Parameter] public Guid JobId { get; set; }
 
-    private List<JobRecord> JobRecords { get; } = new();
+    private List<JobRecordResponse> JobRecords { get; } = new();
     private JobRecordsFilter JobRecordsFilter { get; set; }
     private bool HasNextPage { get; set; } = true;
     private string? ErrorMessage { get; set; }
@@ -52,11 +54,11 @@ public partial class GrbJobRecords
 
     private Dialog Dialog { get; set; } = new();
     private bool DialogIsOpen { get; set; }
-    private JobRecord? SelectedJobRecord { get; set; }
-    private void OpenDialog(JobRecord jobRecord)
+    private JobRecordResponse? SelectedJobRecord { get; set; }
+    private void OpenDialog(JobRecordResponse jobRecord)
     {
-        Dialog.Caption = $"Job record {jobRecord.Id}";
-        Dialog.Message = jobRecord.ErrorMessage;
+        Dialog.Caption = $"Job record with ID {jobRecord.Id}";
+        Dialog.Message = $"Error: {jobRecord.ErrorMessage}";
 
         Dialog.OnClose = new EventCallback<bool>(this, (Func<bool,Task>) ResolveJobRecordError);
         SelectedJobRecord = jobRecord;

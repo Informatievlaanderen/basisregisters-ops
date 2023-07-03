@@ -1,58 +1,61 @@
-﻿namespace Ops.Web.Pages;
-
-using Jobs;
-using Microsoft.AspNetCore.Components;
-
-public partial class GrbJobs
+﻿namespace Ops.Web.Pages
 {
-    private bool JobsLoaded;
+    using Grb;
+    using Grb.Building.Api.Abstractions.Responses;
+    using Jobs;
+    using Microsoft.AspNetCore.Components;
 
-    [Inject] private IJobsApiProxy JobsApiProxy { get; set; }
-
-    private List<Job> Jobs { get; } = new();
-    private JobsFilter JobsFilter { get; set; }
-    private bool HasNextPage { get; set; } = true;
-    private string? ErrorMessage { get; set; }
-
-    protected override async Task OnInitializedAsync()
+    public partial class GrbJobs
     {
-        JobsFilter = JobsFilter.Default;
-        await LoadJobs();
-    }
+        private bool JobsLoaded;
 
-    private async Task Filter()
-    {
-        JobsFilter.CurrentPage = 1;
-        await LoadJobs();
-    }
+        [Inject] private IJobsApiProxy JobsApiProxy { get; set; }
 
-    private void UpdateStatusFilter(JobStatus status, bool isChecked)
-    {
-        JobsFilter.Statuses[status] = isChecked;
-    }
+        private List<JobResponse> Jobs { get; } = new();
+        private JobsFilter JobsFilter { get; set; }
+        private bool HasNextPage { get; set; } = true;
+        private string? ErrorMessage { get; set; }
 
-    private async Task LoadPage(int pageNumber)
-    {
-        JobsFilter.CurrentPage = pageNumber;
-        await LoadJobs();
-    }
-
-    private async Task LoadJobs()
-    {
-        JobsLoaded = false;
-        Jobs.Clear();
-
-        if (!string.IsNullOrWhiteSpace(JobsFilter.JobId) && !Guid.TryParse(JobsFilter.JobId, out _))
+        protected override async Task OnInitializedAsync()
         {
-            ErrorMessage = "Invalid ticket id specified";
-        }
-        else
-        {
-            Jobs.AddRange(await JobsApiProxy.GetJobs(JobsFilter, CancellationToken.None));
+            JobsFilter = JobsFilter.Default;
+            await LoadJobs();
         }
 
-        HasNextPage = Jobs.Count >= JobsFilter.Limit;
-        JobsLoaded = true;
-    }
+        private async Task Filter()
+        {
+            JobsFilter.CurrentPage = 1;
+            await LoadJobs();
+        }
 
+        private void UpdateStatusFilter(JobStatus status, bool isChecked)
+        {
+            JobsFilter.Statuses[status] = isChecked;
+        }
+
+        private async Task LoadPage(int pageNumber)
+        {
+            JobsFilter.CurrentPage = pageNumber;
+            await LoadJobs();
+        }
+
+        private async Task LoadJobs()
+        {
+            JobsLoaded = false;
+            Jobs.Clear();
+
+            if (!string.IsNullOrWhiteSpace(JobsFilter.JobId) && !Guid.TryParse(JobsFilter.JobId, out _))
+            {
+                ErrorMessage = "Invalid ticket id specified";
+            }
+            else
+            {
+                Jobs.AddRange(await JobsApiProxy.GetJobs(JobsFilter, CancellationToken.None));
+            }
+
+            HasNextPage = Jobs.Count >= JobsFilter.Limit;
+            JobsLoaded = true;
+        }
+
+    }
 }
