@@ -9,17 +9,17 @@
       <div class="modal-header">
         <h4 class="modal-title">@Caption</h4>
         <button type="button" class="close" @onclick="@Cancel">
-          &times
+          <span class="oi oi-circle-x" aria-hidden="true"></span>
         </button>
       </div>
       <div class="modal-body">
         <p>@Message</p>
       </div>
       <div class="modal-footer">
-            <button type="button" class="btn btn-primary" @onclick=@Ok>
-              Ok
+            <button type="button" class="btn btn-info" @onclick=@Ok>
+              @SubmitButtonText
             </button>
-            <button type="button" class="btn btn-warning" @onclick="@Cancel">
+            <button type="button" class="btn btn-light" @onclick="@Cancel">
               Cancel
             </button>
       </div>

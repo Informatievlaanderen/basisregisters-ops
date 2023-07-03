@@ -61,13 +61,25 @@ else
           <td>@jobRecord.GrId</td>
           <td>@jobRecord.Status</td>
           <td>@jobRecord.VersionDate.ToString("s")</td>
-          @* <td> *@
-          @*   <a class="btn btn-info" @onclick="() => OpenDialog(ticket.TicketId, TicketStatus.Complete)">Complete</a> *@
-          @*   <a class="btn btn-warning" @onclick="() => OpenDialog(ticket.TicketId, TicketStatus.Error)">Error</a> *@
-          @* </td> *@
+          <td>
+            @if (jobRecord.Status == JobRecordStatus.Error)
+            {
+              <a class="btn btn-info" @onclick="() => OpenDialog(jobRecord)">View Error</a>
+            }
+          </td>
         </tr>
       }
       </tbody>
     </table>
   </div>
+
+  @if (DialogIsOpen)
+  {
+    <Dialog
+            Caption=@Dialog.Caption
+            Message=@Dialog.Message
+            SubmitButtonText="Resolve error"
+            OnClose=@Dialog.OnClose>
+    </Dialog>
+  }
 }

@@ -1,5 +1,6 @@
 ﻿namespace Ops.Web.Pages;
 
+using Components;
 using Jobs;
 using Microsoft.AspNetCore.Components;
 
@@ -47,5 +48,28 @@ public partial class GrbJobRecords
 
         HasNextPage = JobRecords.Count >= JobRecordsFilter.Limit;
         JobRecordsLoaded = true;
+    }
+
+    private Dialog Dialog { get; set; } = new();
+    private bool DialogIsOpen { get; set; }
+    private JobRecord? SelectedJobRecord { get; set; }
+    private void OpenDialog(JobRecord jobRecord)
+    {
+        Dialog.Caption = $"Job record {jobRecord.Id}";
+        Dialog.Message = jobRecord.ErrorMessage;
+
+        Dialog.OnClose = new EventCallback<bool>(this, (Func<bool,Task>) ResolveJobRecordError);
+        SelectedJobRecord = jobRecord;
+        DialogIsOpen = true;
+    }
+
+    private async Task ResolveJobRecordError(bool submit)
+    {
+        if (SelectedJobRecord is not null && submit)
+        {
+            // await JobsApiProxy.ResolveJobRecordError(SelectedJobRecord.Id);
+        }
+
+        DialogIsOpen = false;
     }
 }
