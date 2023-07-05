@@ -5,13 +5,14 @@ using TicketingService.Proxy.HttpProxy;
 
 var builder = WebApplication
     .CreateBuilder(args)
-    .AddOptions<TicketingOptions>();
+    .AddOptions<TicketingOptions>()
+    .AddOptions<JobsOptions>();
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
-// add configuration
+// Add configuration
 builder.Configuration
     .AddJsonFile("appsettings.json")
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName.ToLowerInvariant()}.json", optional: true, reloadOnChange: false)
@@ -20,7 +21,6 @@ builder.Configuration
     .AddCommandLine(args);
 
 var ticketingOptions = builder.GetAppOptions<TicketingOptions>();
-// builder.Services.AddSingleton<ITicketingApiProxy, FakeTicketingApiProxy>();
 builder.Services.AddHttpProxyTicketing(ticketingOptions.TicketingServiceUrl);
 builder.Services.AddHttpClient<ITicketingApiProxy, TicketingApiProxy>(c =>
 {
@@ -28,8 +28,6 @@ builder.Services.AddHttpClient<ITicketingApiProxy, TicketingApiProxy>(c =>
 });
 
 var jobsOptions = builder.GetAppOptions<JobsOptions>();
-builder.Services.Configure<JobsOptions>(builder.Configuration.GetSection("JobsOptions"));
-// builder.Services.AddSingleton<IJobsApiProxy, FakeJobsApiProxy>();
 builder.Services.AddHttpClient<IJobsApiProxy, JobsApiProxy>(c =>
 {
     c.BaseAddress = new Uri(jobsOptions.ApiUrl.TrimEnd('/'));

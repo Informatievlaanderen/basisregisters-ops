@@ -6,7 +6,7 @@
     public class FakeJobsApiProxy : IJobsApiProxy
     {
         private List<JobResponse> Jobs { get; }
-        private Dictionary<Guid, List<JobRecordResponse>> JobRecords { get; }
+        private Dictionary<Guid, List<JobRecord>> JobRecords { get; }
 
         public FakeJobsApiProxy()
         {
@@ -44,9 +44,9 @@
                     .ToList());
         }
 
-        public Task<IEnumerable<JobRecordResponse>> GetJobRecords(JobRecordsFilter filter, CancellationToken ct)
+        public Task<IEnumerable<JobRecord>> GetJobRecords(JobRecordsFilter filter, CancellationToken ct)
         {
-            IEnumerable<JobRecordResponse> jobRecords = JobRecords[filter.JobId];
+            IEnumerable<JobRecord> jobRecords = JobRecords[filter.JobId];
 
             if (filter.Statuses.Any(x => x.Value))
             {
@@ -67,7 +67,17 @@
                     .Take(JobRecordsFilter.Limit));
         }
 
-        private static (List<JobResponse> jobs, Dictionary<Guid, List<JobRecordResponse>> jobRecords) SeedJobs(int count)
+        public Task ResolveJobRecordError(JobRecord jobRecord, CancellationToken ct)
+        {
+            if (jobRecord.Status == JobRecordStatus.Error)
+            {
+                jobRecord.Status = JobRecordStatus.ErrorResolved;
+            }
+
+            return Task.CompletedTask;
+        }
+
+        private static (List<JobResponse> jobs, Dictionary<Guid, List<JobRecord>> jobRecords) SeedJobs(int count)
         {
             var jobStatuses = Enum.GetValues(typeof(JobStatus)).OfType<JobStatus>().ToArray();
             var jobRecordStatuses = Enum.GetValues(typeof(JobRecordStatus)).OfType<JobRecordStatus>().ToArray();
@@ -84,14 +94,16 @@
                 return job;
             }
 
-            JobRecordResponse CreateJobRecord(
+            JobRecord CreateJobRecord(
+                Guid jobId,
                 int recordNumber,
                 JobRecordStatus jobRecordStatus,
                 DateTimeOffset versionDate)
             {
-                return new JobRecordResponse(
-                    recordNumber,
+                return new JobRecord(
                     recordNumber + 1000,
+                    jobId,
+                    recordNumber,
                     recordNumber * 3 + 1000000,
                     jobRecordStatus != JobRecordStatus.Created ? new Uri("https://google.com") : null,
                     jobRecordStatus,
@@ -116,6 +128,7 @@
                     job => Enumerable
                         .Range(1, randomizer.Next(30, 300))
                         .Select(recordNumber => CreateJobRecord(
+                            job.Id,
                             recordNumber,
                             jobRecordStatuses[randomizer.Next(0, jobRecordStatuses.Length - 1)],
                             job.LastChanged.AddMilliseconds(randomizer.Next(100, 2000))))

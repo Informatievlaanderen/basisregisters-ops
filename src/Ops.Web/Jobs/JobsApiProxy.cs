@@ -4,6 +4,7 @@
     using System.Text.Json;
     using System.Text.Json.Serialization;
     using Flurl;
+    using Grb;
     using Grb.Building.Api.Abstractions.Responses;
     using IdentityModel;
     using IdentityModel.Client;
@@ -13,12 +14,13 @@
     public class JobsApiProxy : IJobsApiProxy
     {
         private const string DvGrIngemetengebouwBeheerScope = "dv_gr_ingemetengebouw_beheer";
+        private const string DvGrIngemetengebouwUitzonderingen = "dv_gr_ingemetengebouw_uitzonderingen";
 
         private readonly HttpClient _httpClient;
         private readonly JobsOptions _options;
         private readonly JsonSerializerOptions _jsonSerializerOptions;
 
-        private AccessToken? _accessToken;
+        private IDictionary<string, AccessToken> _accessTokens;
 
         public JobsApiProxy(HttpClient httpClient, IOptions<JobsOptions> jobsOptions)
         {
@@ -27,6 +29,7 @@
             _jsonSerializerOptions = new JsonSerializerOptions();
             _jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
             _jsonSerializerOptions.PropertyNameCaseInsensitive = true;
+            _accessTokens = new Dictionary<string, AccessToken>();
         }
 
         public async Task<IEnumerable<JobResponse>> GetJobs(JobsFilter filter, CancellationToken ct)
@@ -48,14 +51,15 @@
 
             var response = await _httpClient.GetFromJsonAsync<GetJobsResponse>(location, _jsonSerializerOptions, ct);
 
-            return response.Jobs;
+            return response?.Jobs ?? Array.Empty<JobResponse>();
         }
 
-        public async Task<IEnumerable<JobRecordResponse>> GetJobRecords(JobRecordsFilter filter, CancellationToken ct)
+        public async Task<IEnumerable<JobRecord>> GetJobRecords(JobRecordsFilter filter, CancellationToken ct)
         {
             var location = $"/v2/uploads/jobs/{filter.JobId}/jobrecords";
 
-            location = location.SetQueryParam("statuses", filter.Statuses.Where(x => x.Value).Select(x => (int)x.Key));
+            location = location.SetQueryParam("statuses",
+                filter.Statuses.Where(x => x.Value).Select(x => (int)x.Key));
             location = location.SetQueryParam("offset", (filter.CurrentPage - 1) * TicketsFilter.Limit);
             location = location.SetQueryParam("limit", TicketsFilter.Limit);
 
@@ -64,14 +68,35 @@
 
             var response = await _httpClient.GetFromJsonAsync<GetJobRecordsResponse>(location, _jsonSerializerOptions, ct);
 
-            return response.JobRecords;
+            return response?.JobRecords
+                       .Select(x => new JobRecord(x.Id, filter.JobId, x.RecordNumber, x.GrId, x.TicketUrl, x.Status, x.ErrorMessage, x.VersionDate))
+                ?? Array.Empty<JobRecord>();
+        }
+
+        public async Task ResolveJobRecordError(JobRecord jobRecord, CancellationToken ct)
+        {
+            if (jobRecord.Status != JobRecordStatus.Error)
+            {
+                return;
+            }
+
+            var location = $"/v2/uploads/jobs/{jobRecord.JobId}/jobrecords/{jobRecord.JobRecordId}";
+
+            _httpClient.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", await GetAccessToken($"{DvGrIngemetengebouwBeheerScope} {DvGrIngemetengebouwUitzonderingen}"));
+
+            var response = await _httpClient.DeleteAsync(location, ct);
+            response.EnsureSuccessStatusCode();
+
+            // Update the job record manually so a reload is not necessary.
+            jobRecord.Status = JobRecordStatus.ErrorResolved;
         }
 
         private async Task<string> GetAccessToken(string requiredScopes)
         {
-            if (_accessToken is not null && !_accessToken.IsExpired)
+            if (_accessTokens.ContainsKey(requiredScopes) && !_accessTokens[requiredScopes].IsExpired)
             {
-                return _accessToken.Token;
+                return _accessTokens[requiredScopes].Token;
             }
 
             var tokenClient = new TokenClient(
@@ -86,9 +111,10 @@
 
             var response = await tokenClient.RequestTokenAsync(OidcConstants.GrantTypes.ClientCredentials);
 
-            _accessToken = new AccessToken(response.AccessToken, response.ExpiresIn);
+            var accessToken = new AccessToken(response.AccessToken!, response.ExpiresIn);
+            _accessTokens[requiredScopes] = accessToken;
 
-            return _accessToken.Token;
+            return accessToken.Token;
         }
     }
 

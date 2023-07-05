@@ -2,9 +2,9 @@
 
 using Components;
 using Grb;
-using Grb.Building.Api.Abstractions.Responses;
 using Jobs;
 using Microsoft.AspNetCore.Components;
+using JobRecord = Jobs.JobRecord;
 
 public partial class GrbJobRecords
 {
@@ -13,7 +13,7 @@ public partial class GrbJobRecords
     [Inject] private IJobsApiProxy JobsApiProxy { get; set; }
     [Parameter] public Guid JobId { get; set; }
 
-    private List<JobRecordResponse> JobRecords { get; } = new();
+    private List<JobRecord> JobRecords { get; } = new();
     private JobRecordsFilter JobRecordsFilter { get; set; }
     private bool HasNextPage { get; set; } = true;
     private string? ErrorMessage { get; set; }
@@ -54,10 +54,10 @@ public partial class GrbJobRecords
 
     private Dialog Dialog { get; set; } = new();
     private bool DialogIsOpen { get; set; }
-    private JobRecordResponse? SelectedJobRecord { get; set; }
-    private void OpenDialog(JobRecordResponse jobRecord)
+    private JobRecord? SelectedJobRecord { get; set; }
+    private void OpenDialog(JobRecord jobRecord)
     {
-        Dialog.Caption = $"Job record with ID {jobRecord.Id}";
+        Dialog.Caption = $"Job record with ID {jobRecord.JobRecordId}";
         Dialog.Message = $"Error: {jobRecord.ErrorMessage}";
 
         Dialog.OnClose = new EventCallback<bool>(this, (Func<bool,Task>) ResolveJobRecordError);
@@ -69,7 +69,7 @@ public partial class GrbJobRecords
     {
         if (SelectedJobRecord is not null && submit)
         {
-            // await JobsApiProxy.ResolveJobRecordError(SelectedJobRecord.Id);
+            await JobsApiProxy.ResolveJobRecordError(SelectedJobRecord, CancellationToken.None);
         }
 
         DialogIsOpen = false;
