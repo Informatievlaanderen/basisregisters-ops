@@ -1,0 +1,5 @@
+be.vlaanderen.basisregisters.grb.building.api.abstractions
+be.vlaanderen.basisregisters.ticketingservice.abstractions
+be.vlaanderen.basisregisters.ticketingservice.proxy.httpproxy
+Flurl
+IdentityModel
