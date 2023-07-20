@@ -1,0 +1,79 @@
+﻿@page "/ticketing"
+@using Ops.Web.Components;
+
+<h3>Ticketing</h3>
+
+@if (!TicketsLoaded)
+{
+  <p>
+    <em>Loading...</em>
+  </p>
+}
+else
+{
+  <Pagination
+    CurrentPage="TicketsFilter.CurrentPage"
+    HasNextPage="HasNextPage"
+    Navigate="LoadPage">
+  </Pagination>
+
+  @if (ErrorMessage is not null)
+  {
+    <p class="alert alert-danger" role="alert">@ErrorMessage</p>
+  }
+
+  <div style="height:900px;overflow-y:scroll">
+    <table class="table">
+      <thead>
+      <tr>
+        <th>
+          Ticket id
+          <input class="form-control" type="text" placeholder="Filter..." @bind="TicketsFilter.TicketId">
+        </th>
+        <th>
+          Status
+          @foreach (var (key, value) in TicketsFilter.Statuses)
+          {
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" @onchange="args => UpdateStatusFilter(key, (bool)args.Value)" checked=@value>
+              <label class="form-check-label">@key</label>
+            </div>
+          }
+        </th>
+        <th>
+          Created
+          <input class="form-control" type="datetime-local" @bind="TicketsFilter.Since">
+        </th>
+        <th>Last modified</th>
+        <th>
+          <button class="btn btn-primary" @onclick="@(async () => await Filter())">Filter</button>
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      @foreach (var ticket in Tickets)
+      {
+        <tr>
+          <td>@ticket.TicketId</td>
+          <td>@ticket.Status</td>
+          <td>@ticket.Created.ToString("s")</td>
+          <td>@ticket.LastModified.ToString("s")</td>
+          @* <td> *@
+          @*   <a class="btn btn-info" @onclick="() => OpenDialog(ticket.TicketId, TicketStatus.Complete)">Complete</a> *@
+          @*   <a class="btn btn-warning" @onclick="() => OpenDialog(ticket.TicketId, TicketStatus.Error)">Error</a> *@
+          @* </td> *@
+        </tr>
+      }
+      </tbody>
+    </table>
+  </div>
+
+  @* @if (DialogIsOpen) *@
+  @* { *@
+  @*   <Dialog *@
+  @*           Caption=@Dialog.Caption *@
+  @*           Message=@Dialog.Message *@
+  @*           OnClose=@Dialog.OnClose> *@
+  @*   </Dialog> *@
+  @* } *@
+}

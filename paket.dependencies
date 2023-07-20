@@ -1,0 +1,17 @@
+framework: net6.0
+strategy: min
+source https://api.nuget.org/v3/index.json
+
+nuget be.vlaanderen.basisregisters.grb.building.api.abstractions 1.3.0
+nuget be.vlaanderen.basisregisters.ticketingservice.abstractions 1.11.3
+nuget be.vlaanderen.basisregisters.ticketingservice.proxy.httpproxy 1.11.3
+nuget Flurl 3.0.7
+nuget IdentityModel 6.1.0
+
+// VBR STUFF
+nuget Be.Vlaanderen.Basisregisters.Build.Pipeline 6.0.5
+nuget Be.Vlaanderen.Basisregisters.Testing.Infrastructure.Events 3.0.0 content: true, copy_content_to_output_dir: always, copy_local: true
+
+// BUILD STUFF
+nuget SourceLink.Embed.AllSourceFiles 2.8.3 copy_local: true
+nuget SourceLink.Copy.PdbFiles 2.8.3 copy_local: true

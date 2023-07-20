@@ -1,0 +1,35 @@
+﻿@if (CurrentPage > 1)
+{
+  <button class="btn btn-primary" @onclick="@(async () => await NavigatePage(CurrentPage - 1))"> &lt; </button>
+}
+
+@foreach (var pageNumber in Enumerable.Range(1, CurrentPage))
+{
+  if (pageNumber == CurrentPage)
+  {
+    <button class="btn btn-primary active" @onclick="@(async () => await NavigatePage(pageNumber))">@pageNumber</button>
+  }
+  else
+  {
+    <button class="btn btn-primary" @onclick="@(async () => await NavigatePage(pageNumber))">@pageNumber</button>
+  }
+}
+
+@if (HasNextPage)
+{
+
+  <button class="btn btn-primary" @onclick="@(async () => await NavigatePage(CurrentPage + 1))"> &gt; </button>
+}
+
+@code {
+  [Parameter] public EventCallback<int> Navigate { get; set; }
+
+  [Parameter] public int CurrentPage { get; set; }
+  [Parameter] public bool HasNextPage { get; set; }
+
+
+  private async Task NavigatePage(int pageNumber)
+  {
+      await Navigate.InvokeAsync(pageNumber);
+  }
+}

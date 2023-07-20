@@ -1,0 +1,93 @@
+﻿@page "/grbjobs/{jobId:guid}/records"
+@using Ops.Web.Components;
+@using Grb
+
+<h3>Grb job @JobId records</h3>
+
+@if (!JobRecordsLoaded)
+{
+  <p>
+    <em>Loading...</em>
+  </p>
+}
+else
+{
+  <Pagination
+    CurrentPage="JobRecordsFilter.CurrentPage"
+    HasNextPage="HasNextPage"
+    Navigate="LoadPage">
+  </Pagination>
+
+  @if (ErrorMessage is not null)
+  {
+    <p class="alert alert-danger" role="alert">@ErrorMessage</p>
+  }
+
+  <div style="height:900px;overflow-y:scroll">
+    <table class="table">
+      <thead>
+      <tr>
+        <th>
+          Job record id
+        </th>
+        <th>Record number</th>
+        <th>Grar ID</th>
+        <th>
+          Status
+          @foreach (var (key, value) in JobRecordsFilter.Statuses)
+          {
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" @onchange="args => UpdateStatusFilter(key, (bool)args.Value)" checked=@value>
+              <label class="form-check-label">@key</label>
+            </div>
+          }
+        </th>
+        <th>
+          Version date
+        </th>
+        <th>
+          Ticket
+        </th>
+        <th>
+          <button class="btn btn-primary" @onclick="@(async () => await Filter())">Filter</button>
+        </th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      @foreach (var jobRecord in JobRecords)
+      {
+        <tr>
+          <td>@jobRecord.JobRecordId</td>
+          <td>@jobRecord.RecordNumber</td>
+          <td>@jobRecord.GrId</td>
+          <td>@jobRecord.Status</td>
+          <td>@jobRecord.VersionDate.ToString("s")</td>
+          <td>
+            @if (jobRecord.TicketUrl is not null)
+            {
+              <a href="@jobRecord.TicketUrl.ToString()" target="_blank">View ticket</a>
+            }
+          </td>
+          <td>
+            @if (jobRecord.Status == JobRecordStatus.Error)
+            {
+              <a class="btn btn-info" @onclick="() => OpenDialog(jobRecord)">View Error</a>
+            }
+          </td>
+        </tr>
+      }
+      </tbody>
+    </table>
+  </div>
+
+  @if (DialogIsOpen)
+  {
+    <Dialog
+      Caption=@Dialog.Caption
+      Message=@Dialog.Message
+      SubmitButtonText="Resolve error"
+      OnClose=@Dialog.OnClose>
+    </Dialog>
+  }
+}

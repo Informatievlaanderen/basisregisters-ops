@@ -1,0 +1,77 @@
+﻿@page "/grbjobs"
+@using Grb
+@using Ops.Web.Components
+
+
+<h3>Grb jobs</h3>
+
+@if (!JobsLoaded)
+{
+  <p>
+    <em>Loading...</em>
+  </p>
+}
+else
+{
+  <Pagination
+    CurrentPage="JobsFilter.CurrentPage"
+    HasNextPage="HasNextPage"
+    Navigate="LoadPage">
+  </Pagination>
+
+  @if (ErrorMessage is not null)
+  {
+    <p class="alert alert-danger" role="alert">@ErrorMessage</p>
+  }
+
+  <div style="height:900px;overflow-y:scroll">
+    <table class="table">
+      <thead>
+      <tr>
+        <th>
+          Job id
+          <input class="form-control" type="text" placeholder="Filter..." @bind="JobsFilter.JobId">
+        </th>
+        <th>
+          Status
+          @foreach (var (key, value) in JobsFilter.Statuses)
+          {
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" @onchange="args => UpdateStatusFilter(key, (bool)args.Value)" checked=@value>
+              <label class="form-check-label">@key</label>
+            </div>
+          }
+        </th>
+        <th>
+          Created
+        </th>
+        <th>Last changed</th>
+        <th>
+          <button class="btn btn-primary" @onclick="@(async () => await Filter())">Filter</button>
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      @foreach (var job in Jobs)
+      {
+        <tr>
+          <td>@job.Id</td>
+          <td>@job.Status</td>
+          <td>@job.Created.ToString("s")</td>
+          <td>@job.LastChanged.ToString("s")</td>
+          <td>
+            @if (job.TicketUrl is not null)
+            {
+              <a href="@job.TicketUrl.ToString()" target="_blank">View ticket</a> @:|
+            }
+            @if (job.Status != JobStatus.Created && job.Status != JobStatus.Cancelled)
+            {
+              <a href="@($"grbjobs/{job.Id}/records")">View job records</a>
+            }
+          </td>
+        </tr>
+      }
+      </tbody>
+    </table>
+  </div>
+}
