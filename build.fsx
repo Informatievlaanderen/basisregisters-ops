@@ -23,7 +23,7 @@ let product = "Basisregisters Vlaanderen"
 let copyright = "Copyright (c) Vlaamse overheid"
 let company = "Vlaamse overheid"
 
-let dockerRepository = "building-registry"
+let dockerRepository = "basisregisters-ops"
 let assemblyVersionNumber = (sprintf "2.%s")
 let nugetVersionNumber = (sprintf "%s")
 
@@ -41,70 +41,28 @@ supportedRuntimeIdentifiers <- [ "msil"; "linux-x64" ]
 
 // Solution -----------------------------------------------------------------------
 
-Target.create "Restore_Solution" (fun _ -> restore "BuildingRegistry")
+Target.create "Restore_Solution" (fun _ -> restore "Ops")
 
 Target.create "Build_Solution" (fun _ ->
   setVersions "SolutionInfo.cs"
-  buildSolution "BuildingRegistry")
+  buildSolution "Ops")
 
 Target.create "Test_Solution" (fun _ ->
     [
-        "test" @@ "BuildingRegistry.Tests"
     ] |> List.iter testWithDotNet
 )
 
 Target.create "Publish_Solution" (fun _ ->
   [
-    "BuildingRegistry.Projector"
-    "BuildingRegistry.Api.Legacy"
-    "BuildingRegistry.Api.Oslo"
-    "BuildingRegistry.Api.Extract"
-    "BuildingRegistry.Api.CrabImport"
-    "BuildingRegistry.Api.BackOffice"
-    "BuildingRegistry.Api.BackOffice.Abstractions"
-    "BuildingRegistry.Api.BackOffice.Handlers.Lambda"
-    "BuildingRegistry.Consumer.Address"
-    "BuildingRegistry.Consumer.Read.Parcel"
-    "BuildingRegistry.Projections.Legacy"
-    "BuildingRegistry.Projections.Extract"
-    "BuildingRegistry.Projections.LastChangedList"
-    "BuildingRegistry.Projections.Syndication"
-    "BuildingRegistry.Projections.BackOffice"
-    "BuildingRegistry.Migrator.Building"
-    "BuildingRegistry.Producer"
-    "BuildingRegistry.Producer.Snapshot.Oslo"
+    "Ops.Web"
   ] |> List.iter publishSource)
 
 Target.create "Pack_Solution" (fun _ ->
   [
-    "BuildingRegistry.Api.Legacy"
-    "BuildingRegistry.Api.Oslo"
-    "BuildingRegistry.Api.Extract"
-    "BuildingRegistry.Api.CrabImport"
-    "BuildingRegistry.Api.BackOffice"
-    "BuildingRegistry.Api.BackOffice.Abstractions"
+
   ] |> List.iter pack)
 
-Target.create "Containerize_Projector" (fun _ -> containerize "BuildingRegistry.Projector" "projector")
-Target.create "Containerize_ApiLegacy" (fun _ -> containerize "BuildingRegistry.Api.Legacy" "api-legacy")
-Target.create "Containerize_ApiOslo" (fun _ -> containerize "BuildingRegistry.Api.Oslo" "api-oslo")
-Target.create "Containerize_ApiExtract" (fun _ -> containerize "BuildingRegistry.Api.Extract" "api-extract")
-Target.create "Containerize_ApiBackOffice" (fun _ -> containerize "BuildingRegistry.Api.BackOffice" "api-backoffice")
-Target.create "Containerize_ApiCrabImport" (fun _ ->
-  let dist = (buildDir @@ "BuildingRegistry.Api.CrabImport" @@ "linux")
-  let source = "assets" @@ "sss"
-
-  //Shell.copyFile dist (source @@ "SqlStreamStore.dll")
-  //Shell.copyFile dist (source @@ "SqlStreamStore.MsSql.dll")
-
-  containerize "BuildingRegistry.Api.CrabImport" "api-crab-import")
-Target.create "Containerize_ProjectionsSyndication" (fun _ -> containerize "BuildingRegistry.Projections.Syndication" "projections-syndication")
-Target.create "Containerize_ProjectionsBackOffice" (fun _ -> containerize "BuildingRegistry.Projections.BackOffice" "projections-backoffice")
-Target.create "Containerize_ConsumerAddress" (fun _ -> containerize "BuildingRegistry.Consumer.Address" "consumer-address")
-Target.create "Containerize_ConsumerParcel" (fun _ -> containerize "BuildingRegistry.Consumer.Read.Parcel" "consumer-read-parcel")
-Target.create "Containerize_MigratorBuilding" (fun _ -> containerize "BuildingRegistry.Migrator.Building" "migrator-building")
-Target.create "Containerize_Producer" (fun _ -> containerize "BuildingRegistry.Producer" "producer")
-Target.create "Containerize_ProducerSnapshotOslo" (fun _ -> containerize "BuildingRegistry.Producer.Snapshot.Oslo" "producer-snapshot-oslo")
+Target.create "Containerize_OpsWeb" (fun _ -> containerize "Ops.Web" "ops-web")
 
 Target.create "SetAssemblyVersions" (fun _ -> setVersions "SolutionInfo.cs")
 // --------------------------------------------------------------------------------
