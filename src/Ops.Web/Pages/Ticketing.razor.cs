@@ -1,6 +1,7 @@
 ﻿namespace Ops.Web.Pages;
 
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Options;
 using Web.Ticketing;
 using TicketingService.Abstractions;
 
@@ -9,6 +10,10 @@ public partial class Ticketing
     private bool TicketsLoaded;
 
     [Inject] private ITicketingApiProxy TicketingApiProxy { get; set; }
+
+    [Inject] private IOptions<TicketingOptions> TicketingOptions { get; set; }
+
+    private string CreateTicketingUrl(Guid id) => $"{TicketingOptions.Value.PublicApiTicketingUrl.TrimEnd('/')}/{id}";
 
     private List<Ticket> Tickets { get; } = new();
     private TicketsFilter TicketsFilter { get; set; }

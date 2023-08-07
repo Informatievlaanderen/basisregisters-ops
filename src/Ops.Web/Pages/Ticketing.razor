@@ -54,7 +54,7 @@ else
       @foreach (var ticket in Tickets)
       {
         <tr>
-          <td>@ticket.TicketId</td>
+          <td><a href="@(CreateTicketingUrl(ticket.TicketId))" target="_blank">@ticket.TicketId</a></td>
           <td>@ticket.Status</td>
           <td>@ticket.Created.ToString("s")</td>
           <td>@ticket.LastModified.ToString("s")</td>
