@@ -72,8 +72,8 @@ jobs:
     if: ${{ (github.repository_owner == 'Informatievlaanderen') && (needs.set-release-version.outputs.version != 'none') }}
     name: Semantic Release
     runs-on: ubuntu-latest
-    needs: [ set-release-version,
-      pack-ops-web,
+    needs: [ 
+      set-release-version,
       build-ops-web
       ]
     outputs:
