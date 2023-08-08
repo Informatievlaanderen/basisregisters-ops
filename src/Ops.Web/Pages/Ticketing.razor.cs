@@ -11,6 +11,7 @@ public partial class Ticketing
 
     [Inject] private ITicketingApiProxy TicketingApiProxy { get; set; }
 
+
     [Inject] private IOptions<TicketingOptions> TicketingOptions { get; set; }
 
     private string CreateTicketingUrl(Guid id) => $"{TicketingOptions.Value.PublicApiTicketingUrl.TrimEnd('/')}/{id}";
