@@ -9,4 +9,7 @@ public class TicketingOptions
 
     [Required]
     public string TicketingServiceUrl { get; set; }
+
+    [Required]
+    public string PublicApiTicketingUrl { get; set; }
 }
