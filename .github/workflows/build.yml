@@ -80,16 +80,16 @@ jobs:
         SONAR_TOKEN: ${{ secrets.VBR_SONAR_TOKEN }}
       shell: bash
       run: |
-        ./.sonar/scanner/dotnet-sonarscanner begin /k:"Informatievlaanderen_parcel-registry" /o:"informatievlaanderen" /d:sonar.login="${{ secrets.VBR_SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.dotcover.reportsPaths=dotCover.Output.html > /dev/null 2>&1
+        ./.sonar/scanner/dotnet-sonarscanner begin /k:"Informatievlaanderen_ops-web" /o:"informatievlaanderen" /d:sonar.login="${{ secrets.VBR_SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.dotcover.reportsPaths=dotCover.Output.html > /dev/null 2>&1
 
     - name: Build
       shell: bash
       run: |
-        dotnet build --nologo --no-restore --no-incremental --configuration Debug ParcelRegistry.sln
+        dotnet build --nologo --no-restore --no-incremental --configuration Debug Ops.sln
 
     - name: Test
       shell: bash
-      run: dotnet dotcover test --dcReportType=HTML --nologo --no-build --filter 'FullyQualifiedName!~IntegrationTests' ParcelRegistry.sln
+      run: dotnet dotcover test --dcReportType=HTML --nologo --no-build --filter 'FullyQualifiedName!~IntegrationTests' Ops.sln
 
     - name: Sonar end build & analyze
       if: env.RELEASE_VERSION != 'none'
