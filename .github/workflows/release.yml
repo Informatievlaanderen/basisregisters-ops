@@ -458,7 +458,7 @@ jobs:
 
   deploy_to_test_start_slack:
     if: github.repository_owner == 'Informatievlaanderen'
-    needs: [ push_images_to_test, upload-lambda, release ]
+    needs: [ push_images_to_test, release ]
     name: Deploy to test started
     environment: test
     runs-on: ubuntu-latest
@@ -511,27 +511,6 @@ jobs:
         echo build-uuid: ${{ steps.awscurl-polling-action.outputs.build-uuid }}
         echo Status: ${{ steps.awscurl-polling-action.outputs.status }}
         echo ${{ steps.awscurl-polling-action.outputs.final-message }}
-
-  deploy_to_test_finish_slack:
-    if: github.repository_owner == 'Informatievlaanderen'
-    needs: [ deploy_lambda_to_test ]
-    name: Deploy to test finished
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Parse repository name
-      run: echo REPOSITORY_NAME=$(echo ""$GITHUB_REPOSITORY"" | awk -F / '{print $2}' | sed -e ""s/:refs//"") >> $GITHUB_ENV
-      shell: bash
-
-    - name: Notify deployment finished
-      uses: slackapi/slack-github-action@v1.23.0
-      with:
-        channel-id: '#team-dinosaur-dev'
-        slack-message: Deployment of ops-web to test has finished
-      env:
-        SLACK_BOT_TOKEN: ${{ secrets.VBR_SLACK_BOT_TOKEN }}
-        SLACK_CHANNEL: ${{ secrets.VBR_NOTIFIER_CHANNEL_NAME }}
-        REPOSITORY_NAME: ${{ env.REPOSITORY_NAME }}
 
   deploy_to_staging_start_slack:
     if: github.repository_owner == 'Informatievlaanderen'
@@ -588,27 +567,6 @@ jobs:
         echo Status: ${{ steps.awscurl-polling-action.outputs.status }}
         echo ${{ steps.awscurl-polling-action.outputs.final-message }}
 
-  deploy_to_staging_finish_slack:
-    if: github.repository_owner == 'Informatievlaanderen'
-    needs: [ deploy_lambda_to_staging ]
-    name: Deploy to staging finished
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Parse repository name
-      run: echo REPOSITORY_NAME=$(echo ""$GITHUB_REPOSITORY"" | awk -F / '{print $2}' | sed -e ""s/:refs//"") >> $GITHUB_ENV
-      shell: bash
-
-    - name: Notify deployment finished
-      uses: slackapi/slack-github-action@v1.23.0
-      with:
-        channel-id: '#team-dinosaur-dev'
-        slack-message: Deployment of ops-web to staging has finished
-      env:
-        SLACK_BOT_TOKEN: ${{ secrets.VBR_SLACK_BOT_TOKEN }}
-        SLACK_CHANNEL: ${{ secrets.VBR_NOTIFIER_CHANNEL_NAME }}
-        REPOSITORY_NAME: ${{ env.REPOSITORY_NAME }}
-
   deploy_to_newproduction_start_slack:
     if: github.repository_owner == 'Informatievlaanderen'
     needs: [ push_images_to_newproduction, deploy_to_test_finish_slack, release ]
@@ -663,24 +621,3 @@ jobs:
         echo build-uuid: ${{ steps.awscurl-polling-action.outputs.build-uuid }}
         echo Status: ${{ steps.awscurl-polling-action.outputs.status }}
         echo ${{ steps.awscurl-polling-action.outputs.final-message }}
-
-  deploy_to_newproduction_finish_slack:
-    if: github.repository_owner == 'Informatievlaanderen'
-    needs: [ deploy_lambda_to_newproduction ]
-    name: Deploy to new production finished
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Parse repository name
-      run: echo REPOSITORY_NAME=$(echo ""$GITHUB_REPOSITORY"" | awk -F / '{print $2}' | sed -e ""s/:refs//"") >> $GITHUB_ENV
-      shell: bash
-
-    - name: Notify deployment finished
-      uses: slackapi/slack-github-action@v1.23.0
-      with:
-        channel-id: '#team-dinosaur-dev'
-        slack-message: Deployment of ops-web to new production has finished
-      env:
-        SLACK_BOT_TOKEN: ${{ secrets.VBR_SLACK_BOT_TOKEN }}
-        SLACK_CHANNEL: ${{ secrets.VBR_NOTIFIER_CHANNEL_NAME }}
-        REPOSITORY_NAME: ${{ env.REPOSITORY_NAME }}
