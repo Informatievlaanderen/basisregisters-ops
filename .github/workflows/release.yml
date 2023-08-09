@@ -63,7 +63,7 @@ jobs:
       build-target: Containerize_OpsWeb
       image-file: ops-web-image.tar
       image-name: ops-web
-      # test-project: 
+      test-project: Ops.Web
       build-project: Ops.Web
       semver: ${{ needs.set-release-version.outputs.version }}
     secrets: inherit
