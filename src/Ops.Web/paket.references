@@ -1,5 +1,9 @@
-be.vlaanderen.basisregisters.grb.building.api.abstractions
-be.vlaanderen.basisregisters.ticketingservice.abstractions
-be.vlaanderen.basisregisters.ticketingservice.proxy.httpproxy
+Be.Vlaanderen.Basisregisters.Grb.Building.Api.Abstractions
+Be.Vlaanderen.Basisregisters.TicketingService.Abstractions
+Be.Vlaanderen.Basisregisters.TicketingService.Proxy.HttpProxy
+
 Flurl
 IdentityModel
+
+SourceLink.Embed.AllSourceFiles
+SourceLink.Copy.PdbFiles

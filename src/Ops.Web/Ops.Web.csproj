@@ -4,7 +4,7 @@
 
   <PropertyGroup>
     <ServerGarbageCollection>true</ServerGarbageCollection>
-    <EnableDefaultContentItems>false</EnableDefaultContentItems>
+    <EnableDefaultContentItems>true</EnableDefaultContentItems> <!-- To be reviewed if we want to use this -->
   </PropertyGroup>
 
   <ItemGroup>

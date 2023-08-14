@@ -1,5 +1,8 @@
 ﻿namespace Ops.Web.Jobs
 {
+    using System.Collections.Generic;
+    using System.Threading;
+    using System.Threading.Tasks;
     using Grb.Building.Api.Abstractions.Responses;
 
     public interface IJobsApiProxy

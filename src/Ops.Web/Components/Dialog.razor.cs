@@ -1,5 +1,6 @@
 ﻿namespace Ops.Web.Components
 {
+    using System.Threading.Tasks;
     using Microsoft.AspNetCore.Components;
 
     public partial class Dialog

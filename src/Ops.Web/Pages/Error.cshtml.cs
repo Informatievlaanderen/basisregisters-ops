@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Ops.Web.Pages;
 
+using Microsoft.Extensions.Logging;
+
 [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 [IgnoreAntiforgeryToken]
 public class ErrorModel : PageModel

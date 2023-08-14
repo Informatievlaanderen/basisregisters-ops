@@ -1,7 +1,12 @@
 ﻿namespace Ops.Web;
 
+using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Reflection;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 public static class StartupExtensions
 {

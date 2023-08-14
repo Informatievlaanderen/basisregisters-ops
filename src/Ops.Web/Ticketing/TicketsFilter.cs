@@ -1,5 +1,7 @@
 namespace Ops.Web.Ticketing;
 
+using System;
+using System.Collections.Generic;
 using TicketingService.Abstractions;
 
 public class TicketsFilter
