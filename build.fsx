@@ -49,6 +49,7 @@ Target.create "Build_Solution" (fun _ ->
 
 Target.create "Test_Solution" (fun _ ->
     [
+      "test": @@ "Ops.Web.Tests"
     ] |> List.iter testWithDotNet
 )
 
