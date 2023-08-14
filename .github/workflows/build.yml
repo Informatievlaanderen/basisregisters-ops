@@ -93,8 +93,7 @@ jobs:
       run: |
         dotnet build --nologo --no-restore --no-incremental --configuration Debug Ops.sln
 
-    - name: Sonar end build & analyze
-      if: env.RELEASE_VERSION != 'none'
+    - name: Sonar end build & analyze      
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         SONAR_TOKEN: ${{ secrets.VBR_SONAR_TOKEN }}
