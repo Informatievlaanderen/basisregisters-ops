@@ -167,10 +167,20 @@ NUGET
       System.Security.Permissions (>= 7.0)
       System.Security.Principal.Windows (>= 5.0)
       System.Text.Encoding.CodePages (>= 7.0)
+    Microsoft.CodeCoverage (17.7)
     Microsoft.NET.StringTools (17.6.3)
       System.Memory (>= 4.5.5)
       System.Runtime.CompilerServices.Unsafe (>= 6.0)
-    Microsoft.NETCore.Platforms (7.0.4) - copy_local: true, copy_content_to_output_dir: always, content: true
+    Microsoft.NET.Test.Sdk (17.1)
+      Microsoft.CodeCoverage (>= 17.1)
+      Microsoft.TestPlatform.TestHost (>= 17.1)
+    Microsoft.NETCore.Platforms (7.0.4)
+    Microsoft.TestPlatform.ObjectModel (17.7)
+      NuGet.Frameworks (>= 6.5)
+      System.Reflection.Metadata (>= 1.6)
+    Microsoft.TestPlatform.TestHost (17.7)
+      Microsoft.TestPlatform.ObjectModel (>= 17.7)
+      Newtonsoft.Json (>= 13.0.1)
     Microsoft.Win32.Registry (5.0)
       System.Security.AccessControl (>= 5.0)
       System.Security.Principal.Windows (>= 5.0)
@@ -179,7 +189,7 @@ NUGET
     MSBuild.StructuredLogger (2.1.844)
       Microsoft.Build.Framework (>= 17.5)
       Microsoft.Build.Utilities.Core (>= 17.5)
-    NETStandard.Library (2.0.3) - copy_local: true, copy_content_to_output_dir: always, content: true
+    NETStandard.Library (2.0.3)
       Microsoft.NETCore.Platforms (>= 1.1)
     Newtonsoft.Json (13.0.3)
     NodaTime (3.1.9) - copy_local: true, copy_content_to_output_dir: always, content: true
@@ -214,6 +224,8 @@ NUGET
     System.Formats.Asn1 (7.0)
     System.Memory (4.5.5)
     System.Reactive (5.0)
+    System.Reflection.Metadata (7.0.2)
+      System.Collections.Immutable (>= 7.0)
     System.Runtime.CompilerServices.Unsafe (6.0)
     System.Security.AccessControl (6.0)
     System.Security.Cryptography.Cng (5.0)
@@ -228,20 +240,21 @@ NUGET
       System.Runtime.CompilerServices.Unsafe (>= 6.0)
     System.Windows.Extensions (7.0) - copy_local: true, copy_content_to_output_dir: always, content: true
       System.Drawing.Common (>= 7.0)
-    xunit (2.5) - copy_local: true, copy_content_to_output_dir: always, content: true
-      xunit.analyzers (>= 1.2)
-      xunit.assert (>= 2.5)
-      xunit.core (2.5)
-    xunit.abstractions (2.0.3) - copy_local: true, copy_content_to_output_dir: always, content: true
-    xunit.analyzers (1.2) - copy_local: true, copy_content_to_output_dir: always, content: true
-    xunit.assert (2.5) - copy_local: true, copy_content_to_output_dir: always, content: true
+    xunit (2.4.1)
+      xunit.analyzers (>= 0.10)
+      xunit.assert (2.4.1)
+      xunit.core (2.4.1)
+    xunit.abstractions (2.0.3)
+    xunit.analyzers (1.2)
+    xunit.assert (2.4.1)
       NETStandard.Library (>= 1.6.1)
-    xunit.core (2.5) - copy_local: true, copy_content_to_output_dir: always, content: true
-      xunit.extensibility.core (2.5)
-      xunit.extensibility.execution (2.5)
-    xunit.extensibility.core (2.5) - copy_local: true, copy_content_to_output_dir: always, content: true
+    xunit.core (2.4.1)
+      xunit.extensibility.core (2.4.1)
+      xunit.extensibility.execution (2.4.1)
+    xunit.extensibility.core (2.4.1)
       NETStandard.Library (>= 1.6.1)
       xunit.abstractions (>= 2.0.3)
-    xunit.extensibility.execution (2.5) - copy_local: true, copy_content_to_output_dir: always, content: true
+    xunit.extensibility.execution (2.4.1)
       NETStandard.Library (>= 1.6.1)
-      xunit.extensibility.core (2.5)
+      xunit.extensibility.core (2.4.1)
+    xunit.runner.visualstudio (2.4.3)
