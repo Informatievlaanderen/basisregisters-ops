@@ -93,6 +93,10 @@ jobs:
       run: |
         dotnet build --nologo --no-restore --no-incremental --configuration Debug Ops.sln
 
+    - name: Test
+      shell: bash
+      run: dotnet dotcover test --dcReportType=HTML --nologo --no-build --filter 'FullyQualifiedName!~IntegrationTests' Ops.sln
+
     - name: Sonar end build & analyze      
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
