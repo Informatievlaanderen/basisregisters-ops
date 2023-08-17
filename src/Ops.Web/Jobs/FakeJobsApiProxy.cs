@@ -6,11 +6,10 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Grb;
-    using Grb.Building.Api.Abstractions.Responses;
 
     public class FakeJobsApiProxy : IJobsApiProxy
     {
-        private List<JobResponse> Jobs { get; }
+        private List<Job> Jobs { get; }
         private Dictionary<Guid, List<JobRecord>> JobRecords { get; }
 
         public FakeJobsApiProxy()
@@ -20,14 +19,14 @@
             JobRecords = seed.jobRecords;
         }
 
-        public async Task<IEnumerable<JobResponse>> GetJobs(JobsFilter filter, CancellationToken ct)
+        public async Task<IEnumerable<Job>> GetJobs(JobsFilter filter, CancellationToken ct)
         {
             if (!string.IsNullOrWhiteSpace(filter.JobId))
             {
                 return new[] { Jobs.Single(x => x.Id == Guid.Parse(filter.JobId)) };
             }
 
-            IEnumerable<JobResponse> jobs = Jobs;
+            IEnumerable<Job> jobs = Jobs;
 
             if (filter.Statuses.Any(x => x.Value))
             {
@@ -72,6 +71,13 @@
                     .Take(JobRecordsFilter.Limit));
         }
 
+        public Task CancelJob(Job job, CancellationToken ct)
+        {
+            job.Status = JobStatus.Cancelled;
+
+            return Task.CompletedTask;
+        }
+
         public Task ResolveJobRecordError(JobRecord jobRecord, CancellationToken ct)
         {
             if (jobRecord.Status == JobRecordStatus.Error)
@@ -82,7 +88,7 @@
             return Task.CompletedTask;
         }
 
-        private static (List<JobResponse> jobs, Dictionary<Guid, List<JobRecord>> jobRecords) SeedJobs(int count)
+        private static (List<Job> jobs, Dictionary<Guid, List<JobRecord>> jobRecords) SeedJobs(int count)
         {
             var jobStatuses = Enum.GetValues(typeof(JobStatus)).OfType<JobStatus>().ToArray();
             var jobRecordStatuses = Enum.GetValues(typeof(JobRecordStatus)).OfType<JobRecordStatus>().ToArray();
@@ -91,11 +97,11 @@
 
             var randomizer = new Random();
 
-            JobResponse CreateJob(JobStatus status, int daysToSubtract)
+            Job CreateJob(JobStatus status, int daysToSubtract)
             {
                 var created = DateTime.UtcNow.Subtract(TimeSpan.FromDays(daysToSubtract));
 
-                var job = new JobResponse(Guid.NewGuid(), new Uri("https://google.com"), status, created, created, new Uri("https://google.com"));
+                var job = new Job(Guid.NewGuid(), new Uri("https://google.com"), status, created, created);
                 return job;
             }
 
@@ -120,10 +126,13 @@
             }
 
             var jobs = Enumerable
-                .Range(1, count)
+                .Range(1, count - 10)
                 .Select(_ => CreateJob(
                     jobStatuses[randomizer.Next(0, jobStatuses.Length - 1)],
                     randomizer.Next(1, dateRange)))
+                .Concat(Enumerable.Range(0, 10).Select(_ => CreateJob(
+                        JobStatus.Error,
+                        randomizer.Next(1, dateRange))))
                 .ToList();
 
             var jobRecords = jobs

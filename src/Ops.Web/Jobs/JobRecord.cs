@@ -34,5 +34,15 @@
             ErrorMessage = errorMessage;
             VersionDate = versionDate;
         }
+
+        public bool HasTicket()
+        {
+            return TicketUrl is not null;
+        }
+
+        public bool HasError()
+        {
+            return Status == JobRecordStatus.Error;
+        }
     }
 }
