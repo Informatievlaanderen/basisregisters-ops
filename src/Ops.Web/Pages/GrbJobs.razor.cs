@@ -2,12 +2,14 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using Grb;
     using Grb.Building.Api.Abstractions.Responses;
     using Jobs;
     using Microsoft.AspNetCore.Components;
+    using Job = Jobs.Job;
 
     public partial class GrbJobs
     {
@@ -15,7 +17,7 @@
 
         [Inject] private IJobsApiProxy JobsApiProxy { get; set; }
 
-        private List<JobResponse> Jobs { get; } = new();
+        private List<Job> Jobs { get; } = new();
         private JobsFilter JobsFilter { get; set; }
         private bool HasNextPage { get; set; } = true;
         private string? ErrorMessage { get; set; }
@@ -61,5 +63,9 @@
             JobsLoaded = true;
         }
 
+        private async Task Cancel(Job job)
+        {
+            await JobsApiProxy.CancelJob(job, CancellationToken.None);
+        }
     }
 }

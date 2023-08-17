@@ -56,15 +56,13 @@ public partial class GrbJobRecords
         JobRecordsLoaded = true;
     }
 
-    private Dialog Dialog { get; set; } = new();
     private bool DialogIsOpen { get; set; }
+    private string DialogCaption => $"Job record with ID {SelectedJobRecord!.JobRecordId}";
+    private string DialogMessage => $"Error: {SelectedJobRecord!.ErrorMessage}";
     private JobRecord? SelectedJobRecord { get; set; }
+
     private void OpenDialog(JobRecord jobRecord)
     {
-        Dialog.Caption = $"Job record with ID {jobRecord.JobRecordId}";
-        Dialog.Message = $"Error: {jobRecord.ErrorMessage}";
-
-        Dialog.OnClose = new EventCallback<bool>(this, (Func<bool,Task>) ResolveJobRecordError);
         SelectedJobRecord = jobRecord;
         DialogIsOpen = true;
     }

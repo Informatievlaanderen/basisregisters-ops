@@ -1,5 +1,4 @@
 ﻿@page "/grbjobs"
-@using Grb
 @using Ops.Web.Components
 
 
@@ -46,6 +45,7 @@ else
           Created
         </th>
         <th>Last changed</th>
+        <th></th>
         <th>
           <button class="btn btn-primary" @onclick="@(async () => await Filter())">Filter</button>
         </th>
@@ -60,13 +60,20 @@ else
           <td>@job.Created.ToString("s")</td>
           <td>@job.LastChanged.ToString("s")</td>
           <td>
-            @if (job.TicketUrl is not null)
+            @if (job.HasTicket())
             {
-              <a href="@job.TicketUrl.ToString()" target="_blank">View ticket</a> @:|
+              <a href="@job.TicketUrl!.ToString()" target="_blank">Ticket</a>
+              @:|
             }
-            @if (job.Status != JobStatus.Created && job.Status != JobStatus.Cancelled)
+            @if (job.CanHaveRecords())
             {
-              <a href="@($"grbjobs/{job.Id}/records")">View job records</a>
+              <a href="@($"grbjobs/{job.Id}/records")">Job records</a>
+            }
+          </td>
+          <td>
+            @if (job.CanCancel())
+            {
+              <button class="btn btn-info" @onclick="@(async () => await Cancel(job))">Cancel</button>
             }
           </td>
         </tr>

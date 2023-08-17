@@ -39,12 +39,14 @@
             _accessTokens = new Dictionary<string, AccessToken>();
         }
 
-        public async Task<IEnumerable<JobResponse>> GetJobs(JobsFilter filter, CancellationToken ct)
+        public async Task<IEnumerable<Job>> GetJobs(JobsFilter filter, CancellationToken ct)
         {
             if (!string.IsNullOrWhiteSpace(filter.JobId))
             {
-                var job = await _httpClient.GetFromJsonAsync<JobResponse>($"/v2/uploads/jobs/{filter.JobId}", ct);
-                return job is not null ? new[] { job } : Array.Empty<JobResponse>();
+                var jobResponse = await _httpClient.GetFromJsonAsync<JobResponse>($"/v2/uploads/jobs/{filter.JobId}", _jsonSerializerOptions, ct);
+                return jobResponse is not null
+                    ? new[] { new Job(jobResponse.Id, jobResponse.TicketUrl, jobResponse.Status, jobResponse.Created, jobResponse.LastChanged) }
+                    : Array.Empty<Job>();
             }
 
             var location = "/v2/uploads/jobs";
@@ -58,7 +60,9 @@
 
             var response = await _httpClient.GetFromJsonAsync<GetJobsResponse>(location, _jsonSerializerOptions, ct);
 
-            return response?.Jobs ?? Array.Empty<JobResponse>();
+            return response?.Jobs
+                    .Select(x => new Job(x.Id, x.TicketUrl, x.Status, x.Created, x.LastChanged))
+                   ?? Array.Empty<Job>();
         }
 
         public async Task<IEnumerable<JobRecord>> GetJobRecords(JobRecordsFilter filter, CancellationToken ct)
@@ -78,6 +82,25 @@
             return response?.JobRecords
                        .Select(x => new JobRecord(x.Id, filter.JobId, x.RecordNumber, x.GrId, x.TicketUrl, x.Status, x.ErrorMessage, x.VersionDate))
                 ?? Array.Empty<JobRecord>();
+        }
+
+        public async Task CancelJob(Job job, CancellationToken ct)
+        {
+            if (job.Status == JobStatus.Cancelled)
+            {
+                return;
+            }
+
+            var location = $"/v2/uploads/jobs/{job.Id}";
+
+            _httpClient.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", await GetAccessToken($"{DvGrIngemetengebouwBeheerScope} {DvGrIngemetengebouwUitzonderingen}"));
+
+            var response = await _httpClient.DeleteAsync(location, ct);
+            response.EnsureSuccessStatusCode();
+
+            // Update the job manually so a reload is not necessary.
+            job.Status = JobStatus.Cancelled;
         }
 
         public async Task ResolveJobRecordError(JobRecord jobRecord, CancellationToken ct)

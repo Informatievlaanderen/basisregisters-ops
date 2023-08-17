@@ -1,6 +1,5 @@
 ﻿@page "/grbjobs/{jobId:guid}/records"
-@using Ops.Web.Components;
-@using Grb
+@using Ops.Web.Components
 
 <h3>Grb job @JobId records</h3>
 
@@ -64,15 +63,15 @@ else
           <td>@jobRecord.Status</td>
           <td>@jobRecord.VersionDate.ToString("s")</td>
           <td>
-            @if (jobRecord.TicketUrl is not null)
+            @if (jobRecord.HasTicket())
             {
-              <a href="@jobRecord.TicketUrl.ToString()" target="_blank">View ticket</a>
+              <a href="@jobRecord.TicketUrl!.ToString()" target="_blank">Ticket</a>
             }
           </td>
           <td>
-            @if (jobRecord.Status == JobRecordStatus.Error)
+            @if (jobRecord.HasError())
             {
-              <a class="btn btn-info" @onclick="() => OpenDialog(jobRecord)">View Error</a>
+              <a class="btn btn-info" @onclick="() => OpenDialog(jobRecord)">Resolve</a>
             }
           </td>
         </tr>
@@ -84,10 +83,10 @@ else
   @if (DialogIsOpen)
   {
     <Dialog
-      Caption=@Dialog.Caption
-      Message=@Dialog.Message
+      Caption=@DialogCaption
+      Message=@DialogMessage
       SubmitButtonText="Resolve error"
-      OnClose=@Dialog.OnClose>
+      OnClose=@ResolveJobRecordError>
     </Dialog>
   }
 }
