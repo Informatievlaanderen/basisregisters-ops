@@ -295,7 +295,7 @@ jobs:
         shell: bash
         run: |
           echo $IMAGE:$SEMVER
-          docker push $BUILD_DOCKER_REGISTRY/ops-web/$IMAGE:$SEMVER
+          docker push $BUILD_DOCKER_REGISTRY/grar/$IMAGE:$SEMVER
         env:
           BUILD_DOCKER_REGISTRY: ${{ secrets.VBR_BUILD_DOCKER_REGISTRY_TST }}
           IMAGE: ${{ matrix.image }}
@@ -344,8 +344,8 @@ jobs:
         shell: bash
         run: |
           echo $IMAGE:$SEMVER
-          docker tag $BUILD_DOCKER_REGISTRY_TST/ops-web/$IMAGE:$SEMVER $BUILD_DOCKER_REGISTRY/ops-web/$IMAGE:$SEMVER
-          docker push $BUILD_DOCKER_REGISTRY/ops-web/$IMAGE:$SEMVER
+          docker tag $BUILD_DOCKER_REGISTRY_TST/grar/$IMAGE:$SEMVER $BUILD_DOCKER_REGISTRY/grar/$IMAGE:$SEMVER
+          docker push $BUILD_DOCKER_REGISTRY/grar/$IMAGE:$SEMVER
         env:
           BUILD_DOCKER_REGISTRY_TST: ${{ secrets.VBR_BUILD_DOCKER_REGISTRY_TST }}
           BUILD_DOCKER_REGISTRY: ${{ secrets.VBR_BUILD_DOCKER_REGISTRY }}
@@ -395,8 +395,8 @@ jobs:
         shell: bash
         run: |
           echo $IMAGE:$SEMVER
-          docker tag $BUILD_DOCKER_REGISTRY_TST/ops-web/$IMAGE:$SEMVER $BUILD_DOCKER_REGISTRY_NEWPRD/ops-web/$IMAGE:$SEMVER
-          docker push $BUILD_DOCKER_REGISTRY_NEWPRD/ops-web/$IMAGE:$SEMVER
+          docker tag $BUILD_DOCKER_REGISTRY_TST/grar/$IMAGE:$SEMVER $BUILD_DOCKER_REGISTRY_NEWPRD/grar/$IMAGE:$SEMVER
+          docker push $BUILD_DOCKER_REGISTRY_NEWPRD/grar/$IMAGE:$SEMVER
         env:
           BUILD_DOCKER_REGISTRY_TST: ${{ secrets.VBR_BUILD_DOCKER_REGISTRY_TST }}
           BUILD_DOCKER_REGISTRY_NEWPRD: ${{ secrets.VBR_BUILD_DOCKER_REGISTRY_NEWPRD }}
