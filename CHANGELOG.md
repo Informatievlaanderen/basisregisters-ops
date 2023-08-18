@@ -1,3 +1,13 @@
+## [1.0.3](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v1.0.2...v1.0.3) (2023-08-18)
+
+
+### Bug Fixes
+
+* change ecr ([ec8a071](https://github.com/Informatievlaanderen/basisregisters-ops/commit/ec8a07164ed6241d2fa22069b33040a89bd4f2f1))
+* change registry release.yml ([ed450fc](https://github.com/Informatievlaanderen/basisregisters-ops/commit/ed450fcec34c476947a9bac5cf08eb6b9a9c4121))
+* image name ([455df06](https://github.com/Informatievlaanderen/basisregisters-ops/commit/455df06038902c74665a5b60e8f5aefa6605154e))
+* yml file ([a5a7595](https://github.com/Informatievlaanderen/basisregisters-ops/commit/a5a759554e610d8b9145f62d4464fe56ac723235))
+
 ## [1.0.2](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v1.0.1...v1.0.2) (2023-08-18)
 
 
