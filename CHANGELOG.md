@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v1.0.1...v1.0.2) (2023-08-18)
+
+
+### Bug Fixes
+
+* release push test ([1b01c2f](https://github.com/Informatievlaanderen/basisregisters-ops/commit/1b01c2ff3006e2751d8343a888a122fa301b8c76))
+
 ## [1.0.1](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v1.0.0...v1.0.1) (2023-08-18)
 
 
