@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v1.0.0...v1.0.1) (2023-08-18)
+
+
+### Bug Fixes
+
+* remove unused using ([ce66401](https://github.com/Informatievlaanderen/basisregisters-ops/commit/ce66401a4b8a554271d1e15e4adbdb1434663db9))
+
 # 1.0.0 (2023-08-18)
 
 
