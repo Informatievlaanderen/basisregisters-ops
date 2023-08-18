@@ -59,7 +59,7 @@ jobs:
     needs: [ set-release-version ]
     if: ${{ (github.repository_owner == 'Informatievlaanderen') && (needs.set-release-version.outputs.version != 'none') }}
     with:
-      registry: ops-web
+      registry: grar
       build-target: Containerize_OpsWeb
       image-file: ops-web-image.tar
       image-name: ops-web
