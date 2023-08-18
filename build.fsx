@@ -23,7 +23,7 @@ let product = "Basisregisters Vlaanderen"
 let copyright = "Copyright (c) Vlaamse overheid"
 let company = "Vlaamse overheid"
 
-let dockerRepository = "basisregisters-ops"
+let dockerRepository = "grar"
 let assemblyVersionNumber = (sprintf "2.%s")
 let nugetVersionNumber = (sprintf "%s")
 
