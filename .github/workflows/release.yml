@@ -59,7 +59,7 @@ jobs:
     needs: [ set-release-version ]
     if: ${{ (github.repository_owner == 'Informatievlaanderen') && (needs.set-release-version.outputs.version != 'none') }}
     with:
-      registry: grar
+      registry: grar-ops
       build-target: Containerize_OpsWeb
       image-file: dashboard-image.tar
       image-name: dashboard
