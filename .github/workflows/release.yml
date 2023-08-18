@@ -61,8 +61,8 @@ jobs:
     with:
       registry: grar
       build-target: Containerize_OpsWeb
-      image-file: ops-web-image.tar
-      image-name: ops-web
+      image-file: dashboard-image.tar
+      image-name: dashboard
       test-project: Ops.Web.Tests
       build-project: Ops.Web
       semver: ${{ needs.set-release-version.outputs.version }}
