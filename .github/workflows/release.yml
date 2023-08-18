@@ -363,7 +363,7 @@ jobs:
         image: [
           'dashboard'
           ]
-    steps:§()
+    steps:
       - name: Configure AWS credentials (New Production)
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
