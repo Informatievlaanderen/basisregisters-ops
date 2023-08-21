@@ -1,3 +1,11 @@
+## [1.0.4](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v1.0.3...v1.0.4) (2023-08-21)
+
+
+### Bug Fixes
+
+* build change container name grar-ops-dashboard ([8aa97bb](https://github.com/Informatievlaanderen/basisregisters-ops/commit/8aa97bbcbdf5ba4c34c6f589a4fee35b084f0086))
+* undo change container name grar-ops-dashboard ([526ceda](https://github.com/Informatievlaanderen/basisregisters-ops/commit/526cedaad8148a48f1bc3c2127e2f7bec33f99f8))
+
 ## [1.0.3](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v1.0.2...v1.0.3) (2023-08-18)
 
 
