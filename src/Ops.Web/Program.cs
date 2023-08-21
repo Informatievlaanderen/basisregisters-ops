@@ -11,7 +11,8 @@ using TicketingService.Proxy.HttpProxy;
 var builder = WebApplication
     .CreateBuilder(args)
     .AddOptions<TicketingOptions>()
-    .AddOptions<JobsOptions>();
+    .AddOptions<JobsOptions>()
+    .AddOptions<AuthOptions>();
 
 // Add services to the container.
 builder.Services.AddRazorPages();

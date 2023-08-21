@@ -24,15 +24,15 @@
         private const string DvGrIngemetengebouwUitzonderingen = "dv_gr_ingemetengebouw_uitzonderingen";
 
         private readonly HttpClient _httpClient;
-        private readonly JobsOptions _options;
+        private readonly AuthOptions _authOptions;
         private readonly JsonSerializerOptions _jsonSerializerOptions;
 
         private IDictionary<string, AccessToken> _accessTokens;
 
-        public JobsApiProxy(HttpClient httpClient, IOptions<JobsOptions> jobsOptions)
+        public JobsApiProxy(HttpClient httpClient, IOptions<JobsOptions> jobsOptions, IOptions<AuthOptions> authOptions)
         {
             _httpClient = httpClient;
-            _options = jobsOptions.Value;
+            _authOptions = authOptions.Value;
             _jsonSerializerOptions = new JsonSerializerOptions();
             _jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
             _jsonSerializerOptions.PropertyNameCaseInsensitive = true;
@@ -133,9 +133,9 @@
                 () => new HttpClient(),
                 new TokenClientOptions
                 {
-                    Address = "https://authenticatie-ti.vlaanderen.be/op/v1/token",
-                    ClientId = _options.ClientId,
-                    ClientSecret = _options.ClientSecret,
+                    Address = _authOptions.TokenEndpoint,
+                    ClientId = _authOptions.ClientId,
+                    ClientSecret = _authOptions.ClientSecret,
                     Parameters = new Parameters(new[] { new KeyValuePair<string, string>("scope", requiredScopes) })
                 });
 
