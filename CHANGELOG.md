@@ -1,3 +1,10 @@
+## [1.0.6](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v1.0.5...v1.0.6) (2023-08-21)
+
+
+### Bug Fixes
+
+* add healthcheck ([35ff1a2](https://github.com/Informatievlaanderen/basisregisters-ops/commit/35ff1a23e8a8ca25563664f661b0d90c0ab740b7))
+
 ## [1.0.5](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v1.0.4...v1.0.5) (2023-08-21)
 
 
