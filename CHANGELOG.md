@@ -1,3 +1,10 @@
+## [1.0.5](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v1.0.4...v1.0.5) (2023-08-21)
+
+
+### Bug Fixes
+
+* extract auth settings into separate section from joboptions ([857424f](https://github.com/Informatievlaanderen/basisregisters-ops/commit/857424faaa158b5ca9e8c88b7b3a3e0c0f83bb3a))
+
 ## [1.0.4](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v1.0.3...v1.0.4) (2023-08-21)
 
 
