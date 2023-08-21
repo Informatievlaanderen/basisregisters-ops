@@ -63,7 +63,7 @@ Target.create "Pack_Solution" (fun _ ->
 
   ] |> List.iter pack)
 
-Target.create "Containerize_OpsWeb" (fun _ -> containerize "Ops.Web" "dashboard")
+Target.create "Containerize_OpsWeb" (fun _ -> containerize "Ops.Web" "grar-ops-dashboard")
 
 Target.create "SetAssemblyVersions" (fun _ -> setVersions "SolutionInfo.cs")
 // --------------------------------------------------------------------------------
