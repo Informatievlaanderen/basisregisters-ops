@@ -1,3 +1,10 @@
+## [1.0.8](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v1.0.7...v1.0.8) (2023-08-22)
+
+
+### Bug Fixes
+
+* expose container port ([8555125](https://github.com/Informatievlaanderen/basisregisters-ops/commit/8555125f4977647f031f7ca36876ba45c7ffc1d8))
+
 ## [1.0.7](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v1.0.6...v1.0.7) (2023-08-22)
 
 
