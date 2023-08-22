@@ -17,10 +17,6 @@ var builder = WebApplication
     .AddOptions<JobsOptions>()
     .AddOptions<AuthOptions>();
 
-// Add services to the container.
-builder.Services.AddRazorPages();
-builder.Services.AddServerSideBlazor();
-
 // Add configuration
 builder.Configuration
     .AddJsonFile("appsettings.json")
@@ -28,6 +24,13 @@ builder.Configuration
     .AddJsonFile($"appsettings.{Environment.MachineName.ToLowerInvariant()}.json", optional: true, reloadOnChange: false)
     .AddEnvironmentVariables()
     .AddCommandLine(args);
+
+builder.Services.AddHealthChecks()
+    .AddCheck("Health", () => HealthCheckResult.Healthy());
+
+// Add services to the container.
+builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor();
 
 var ticketingOptions = builder.GetAppOptions<TicketingOptions>();
 builder.Services.AddHttpProxyTicketing(ticketingOptions.TicketingServiceUrl);
