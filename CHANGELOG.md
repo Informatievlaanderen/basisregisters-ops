@@ -1,3 +1,10 @@
+## [1.0.7](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v1.0.6...v1.0.7) (2023-08-22)
+
+
+### Bug Fixes
+
+* add healthcheck to iservicecollection ([a0af628](https://github.com/Informatievlaanderen/basisregisters-ops/commit/a0af6288526fcb4fd26da1edf429a881584c661c))
+
 ## [1.0.6](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v1.0.5...v1.0.6) (2023-08-21)
 
 
