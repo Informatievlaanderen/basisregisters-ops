@@ -44,6 +44,11 @@ public class TicketingApiProxy : ITicketingApiProxy
             location = location.SetQueryParam("fromDate", filter.Since.Value.ToString("s"));
         }
 
+        if (filter.To.HasValue)
+        {
+            location = location.SetQueryParam("toDate", filter.To.Value.ToString("s"));
+        }
+
         location = location.SetQueryParam("statuses", filter.Statuses.Where(x => x.Value).Select(x => (int)x.Key));
         location = location.SetQueryParam("offset", (filter.CurrentPage - 1) * TicketsFilter.Limit);
         location = location.SetQueryParam("limit", TicketsFilter.Limit);

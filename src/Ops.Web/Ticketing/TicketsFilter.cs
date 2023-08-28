@@ -19,10 +19,11 @@ public class TicketsFilter
 
     public IDictionary<TicketStatus, bool> Statuses { get; }
     public DateTime? Since { get; set; }
+    public DateTime? To { get; set; }
     public int CurrentPage { get; set; }
 
 
-    private TicketsFilter(int currentPage)
+    public TicketsFilter(int currentPage)
     {
         Statuses = new Dictionary<TicketStatus, bool>
         {
@@ -32,5 +33,35 @@ public class TicketsFilter
             { TicketStatus.Complete, false }
         };
         CurrentPage = currentPage;
+    }
+
+    public void OpenTicketsOffToday()
+    {
+        _ticketId = null;
+
+        Statuses[TicketStatus.Created] = true;
+        Statuses[TicketStatus.Pending] = true;
+        Statuses[TicketStatus.Error] = false;
+        Statuses[TicketStatus.Complete] = false;
+
+        Since = DateTimeOffset.Now.Date;
+        To = DateTimeOffset.Now.Subtract(TimeSpan.FromMinutes(15)).DateTime;
+
+        CurrentPage = 1;
+    }
+
+    public void Clear()
+    {
+        _ticketId = null;
+
+        Statuses[TicketStatus.Created] = false;
+        Statuses[TicketStatus.Pending] = false;
+        Statuses[TicketStatus.Error] = false;
+        Statuses[TicketStatus.Complete] = false;
+
+        Since = null;
+        To = null;
+
+        CurrentPage = 1;
     }
 }
