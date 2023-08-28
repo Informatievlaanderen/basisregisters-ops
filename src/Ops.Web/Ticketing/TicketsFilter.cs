@@ -35,7 +35,7 @@ public class TicketsFilter
         CurrentPage = currentPage;
     }
 
-    public void OpenTicketsOffToday()
+    public void OpenTicketsOfToday()
     {
         _ticketId = null;
 
@@ -46,6 +46,21 @@ public class TicketsFilter
 
         Since = DateTimeOffset.Now.Date;
         To = DateTimeOffset.Now.Subtract(TimeSpan.FromMinutes(15)).DateTime;
+
+        CurrentPage = 1;
+    }
+
+    public void OpenTicketsLastThreeDays()
+    {
+        _ticketId = null;
+
+        Statuses[TicketStatus.Created] = true;
+        Statuses[TicketStatus.Pending] = true;
+        Statuses[TicketStatus.Error] = false;
+        Statuses[TicketStatus.Complete] = false;
+
+        Since = DateTimeOffset.Now.Date.Subtract(TimeSpan.FromDays(3));
+        To = DateTimeOffset.Now.Subtract(TimeSpan.FromDays(15)).DateTime;
 
         CurrentPage = 1;
     }

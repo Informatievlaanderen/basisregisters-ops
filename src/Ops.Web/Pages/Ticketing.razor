@@ -3,7 +3,7 @@
 
 <h3>Ticketing</h3>
 
-@if (!TicketsLoaded)
+@if (!_ticketsLoaded)
 {
   <p>
     <em>Loading...</em>
@@ -47,8 +47,8 @@ else
         </th>
         <th>Last modified</th>
         <th>
-          <button class="btn btn-primary" @onclick="@(async () => await OpenTicketsOffToday())">Today open tickets</button>
-          <button class="btn btn-primary" @onclick="@(async () => await Filter())">QuickFilter3</button>
+          <button class="btn btn-primary" @onclick="@(async () => await OpenTicketsOfToday())">Open tickets today</button>
+          <button class="btn btn-primary" @onclick="@(async () => await OpenTicketsLastThreeDays())">Open tickets last 3 days</button>
           <button class="btn btn-primary" @onclick="@(async () => await Filter())">Filter</button>
         </th>
       </tr>

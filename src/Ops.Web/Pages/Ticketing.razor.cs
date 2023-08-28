@@ -11,17 +11,15 @@ using TicketingService.Abstractions;
 
 public partial class Ticketing
 {
-    private bool TicketsLoaded;
+    private bool _ticketsLoaded;
 
     [Inject] private ITicketingApiProxy TicketingApiProxy { get; set; }
-
-
     [Inject] private IOptions<TicketingOptions> TicketingOptions { get; set; }
 
     private string CreateTicketingUrl(Guid id) => $"{TicketingOptions.Value.PublicApiTicketingUrl.TrimEnd('/')}/{id}";
 
     private List<Ticket> Tickets { get; } = new();
-    private TicketsFilter TicketsFilter { get; set; }
+    private TicketsFilter TicketsFilter { get; set; } = TicketsFilter.Default;
     private bool HasNextPage { get; set; } = true;
     private string? ErrorMessage { get; set; }
 
@@ -37,15 +35,15 @@ public partial class Ticketing
         await LoadTickets();
     }
 
-    private async Task OpenTicketsOffToday()
+    private async Task OpenTicketsOfToday()
     {
-        TicketsFilter.OpenTicketsOffToday();
+        TicketsFilter.OpenTicketsOfToday();
         await LoadTickets();
     }
 
-    private async Task QuickFilter2()
+    private async Task OpenTicketsLastThreeDays()
     {
-        TicketsFilter.Clear();
+        TicketsFilter.OpenTicketsLastThreeDays();
         await LoadTickets();
     }
 
@@ -62,7 +60,7 @@ public partial class Ticketing
 
     private async Task LoadTickets()
     {
-        TicketsLoaded = false;
+        _ticketsLoaded = false;
         Tickets.Clear();
 
         if (!string.IsNullOrWhiteSpace(TicketsFilter.TicketId) && !Guid.TryParse(TicketsFilter.TicketId, out _))
@@ -75,7 +73,7 @@ public partial class Ticketing
         }
 
         HasNextPage = Tickets.Count >= TicketsFilter.Limit;
-        TicketsLoaded = true;
+        _ticketsLoaded = true;
     }
 
     // private Dialog Dialog { get; set; } = new();
