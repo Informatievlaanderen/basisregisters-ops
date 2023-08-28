@@ -1,3 +1,11 @@
+# [1.1.0](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v1.0.8...v1.1.0) (2023-08-28)
+
+
+### Features
+
+* quick filter open tickets for today ([4d4baff](https://github.com/Informatievlaanderen/basisregisters-ops/commit/4d4baff3c5fd8355b5862680d803625f3f57d7aa))
+* quick filter open tickets last three days ([c3461fd](https://github.com/Informatievlaanderen/basisregisters-ops/commit/c3461fdf656f740355fa7f177299ea616d1dd954))
+
 ## [1.0.8](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v1.0.7...v1.0.8) (2023-08-22)
 
 
