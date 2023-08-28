@@ -37,6 +37,18 @@ public partial class Ticketing
         await LoadTickets();
     }
 
+    private async Task OpenTicketsOffToday()
+    {
+        TicketsFilter.OpenTicketsOffToday();
+        await LoadTickets();
+    }
+
+    private async Task QuickFilter2()
+    {
+        TicketsFilter.Clear();
+        await LoadTickets();
+    }
+
     private void UpdateStatusFilter(TicketStatus status, bool isChecked)
     {
         TicketsFilter.Statuses[status] = isChecked;

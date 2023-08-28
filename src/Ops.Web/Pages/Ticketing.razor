@@ -43,9 +43,12 @@ else
         <th>
           Created
           <input class="form-control" type="datetime-local" @bind="TicketsFilter.Since">
+          To <input class="form-control" type="datetime-local" @bind="TicketsFilter.To">
         </th>
         <th>Last modified</th>
         <th>
+          <button class="btn btn-primary" @onclick="@(async () => await OpenTicketsOffToday())">Today open tickets</button>
+          <button class="btn btn-primary" @onclick="@(async () => await Filter())">QuickFilter3</button>
           <button class="btn btn-primary" @onclick="@(async () => await Filter())">Filter</button>
         </th>
       </tr>
