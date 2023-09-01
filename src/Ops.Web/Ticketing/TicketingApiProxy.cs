@@ -50,6 +50,7 @@ public class TicketingApiProxy : ITicketingApiProxy
         }
 
         location = location.SetQueryParam("statuses", filter.Statuses.Where(x => x.Value).Select(x => (int)x.Key));
+        location = location.SetQueryParam("registries", filter.Registries.Where(x => x.Value).Select(x => x.Key));
         location = location.SetQueryParam("offset", (filter.CurrentPage - 1) * TicketsFilter.Limit);
         location = location.SetQueryParam("limit", TicketsFilter.Limit);
 

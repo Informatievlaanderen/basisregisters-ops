@@ -18,6 +18,7 @@ public class TicketsFilter
     }
 
     public IDictionary<TicketStatus, bool> Statuses { get; }
+    public IDictionary<string, bool> Registries { get; }
     public DateTime? Since { get; set; }
     public DateTime? To { get; set; }
     public int CurrentPage { get; set; }
@@ -31,6 +32,17 @@ public class TicketsFilter
             { TicketStatus.Pending, false },
             { TicketStatus.Error, false },
             { TicketStatus.Complete, false }
+        };
+
+        Registries = new Dictionary<string, bool>
+        {
+            { "StreetNameRegistry", false },
+            { "BuildingRegistry", false },
+            { "AddressRegistry", false },
+            { "MunicipalityRegistry", false },
+            { "PostalRegistry", false },
+            { "ParcelRegistry", false },
+            { "RoadRegistry", false },
         };
         CurrentPage = currentPage;
     }
