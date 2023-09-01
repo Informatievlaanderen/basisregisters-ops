@@ -52,6 +52,11 @@ public partial class Ticketing
         TicketsFilter.Statuses[status] = isChecked;
     }
 
+    private void UpdateRegistryFilter(string key, bool isChecked)
+    {
+        TicketsFilter.Registries[key] = isChecked;
+    }
+
     private async Task LoadPage(int pageNumber)
     {
         TicketsFilter.CurrentPage = pageNumber;
