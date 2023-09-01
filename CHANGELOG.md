@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v1.1.0...v1.2.0) (2023-09-01)
+
+
+### Features
+
+* add filtering on registries ([cd24dbc](https://github.com/Informatievlaanderen/basisregisters-ops/commit/cd24dbcfab4aa939040d3d63bade4f807759da98))
+
 # [1.1.0](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v1.0.8...v1.1.0) (2023-08-28)
 
 
