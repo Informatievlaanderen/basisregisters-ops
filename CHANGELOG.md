@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v1.2.0...v1.2.1) (2023-10-24)
+
+
+### Bug Fixes
+
+* layout datadog iframe ([29c4dd3](https://github.com/Informatievlaanderen/basisregisters-ops/commit/29c4dd378beb25e621069bb15cb8475ef0e9c5ea))
+
 # [1.2.0](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v1.1.0...v1.2.0) (2023-09-01)
 
 
