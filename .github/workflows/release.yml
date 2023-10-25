@@ -452,7 +452,7 @@ jobs:
   deploy_to_test_finish_slack:
     if: github.repository_owner == 'Informatievlaanderen'
     needs: [ deploy_to_test ]
-    name: Deploy to production finished
+    name: Deploy to test finished
     runs-on: ubuntu-latest
 
     steps:
@@ -528,7 +528,7 @@ jobs:
   deploy_to_staging_finish_slack:
     if: github.repository_owner == 'Informatievlaanderen'
     needs: [ deploy_to_staging ]
-    name: Deploy to production finished
+    name: Deploy to staging finished
     runs-on: ubuntu-latest
 
     steps:
