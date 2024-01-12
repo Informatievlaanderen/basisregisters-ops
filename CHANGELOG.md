@@ -1,3 +1,10 @@
+## [1.2.2](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v1.2.1...v1.2.2) (2024-01-12)
+
+
+### Bug Fixes
+
+* style to trigger build ([bd72574](https://github.com/Informatievlaanderen/basisregisters-ops/commit/bd72574df5c1f5b219d1e8fa479c00fd5ab42334))
+
 ## [1.2.1](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v1.2.0...v1.2.1) (2023-10-24)
 
 
