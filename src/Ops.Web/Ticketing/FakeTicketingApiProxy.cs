@@ -64,7 +64,6 @@ public class FakeTicketingApiProxy : ITicketingApiProxy
         const int dateRange = 30; // days
 
         var randomizer = new Random();
-
         Ticket CreateTicket(TicketStatus ticketStatus, int daysToSubtract)
         {
             var created = DateTime.UtcNow.Subtract(TimeSpan.FromDays(daysToSubtract));
