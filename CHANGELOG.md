@@ -1,3 +1,10 @@
+## [1.2.3](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v1.2.2...v1.2.3) (2024-02-21)
+
+
+### Bug Fixes
+
+* **bump:** ci/cd new test pipeline ([c230da4](https://github.com/Informatievlaanderen/basisregisters-ops/commit/c230da46c0f99fa90b8810ef6acfb5603ac0ae26))
+
 ## [1.2.2](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v1.2.1...v1.2.2) (2024-01-12)
 
 
