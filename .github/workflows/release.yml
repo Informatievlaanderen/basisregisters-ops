@@ -124,7 +124,7 @@ jobs:
 
     - name: Install NPM dependencies
       shell: bash
-      run: ci
+      run: npm ci
 
     - name: Install Python dependencies
       shell: bash
