@@ -1,3 +1,20 @@
+# [2.0.0](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v1.2.3...v2.0.0) (2024-03-15)
+
+
+### Bug Fixes
+
+* release ([ffaf41c](https://github.com/Informatievlaanderen/basisregisters-ops/commit/ffaf41c325d05db67cc6df5fb6c5f7ca96a8316d))
+
+
+### Features
+
+* move to dotnet 8.0.2 ([bed324c](https://github.com/Informatievlaanderen/basisregisters-ops/commit/bed324c477ffe97dfcef99507aea5904d076e003))
+
+
+### BREAKING CHANGES
+
+* move to dotnet 8.0.2
+
 ## [1.2.3](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v1.2.2...v1.2.3) (2024-02-21)
 
 
