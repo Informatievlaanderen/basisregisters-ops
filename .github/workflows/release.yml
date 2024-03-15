@@ -15,12 +15,14 @@ jobs:
 
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
           persist-credentials: false
 
     - name: Setup Node.js
-      uses: actions/setup-node@v3.5.1
+      uses: actions/setup-node@v4
+      with:
+      node-version: '20.x'
 
     - name: Node version
       shell: bash
@@ -80,12 +82,12 @@ jobs:
       version: ${{ steps.set-version.outputs.version }}
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
           persist-credentials: false
 
     - name: Cache NPM
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       env:
         cache-name: cache-npm
       with:
@@ -99,10 +101,12 @@ jobs:
       shell: bash
 
     - name: Setup Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
+      with:
+      node-version: '20.x'
 
     - name: Setup Python
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v5
       with:
         python-version: '3.x'
 
@@ -120,20 +124,13 @@ jobs:
 
     - name: Install NPM dependencies
       shell: bash
-      run: npm install --legacy-peer-deps
+      run: ci
 
     - name: Install Python dependencies
       shell: bash
       run: |
         python -m pip install --upgrade pip
         pip install requests markdown argparse
-
-    # - name: Download NuGet Ops Web
-    #   uses: actions/download-artifact@v3
-    #   continue-on-error: false
-    #   with:
-    #     name: nuget-Be.Vlaanderen.Basisregisters.Ops.Web-${{ needs.set-release-version.outputs.version }}
-    #     path: dist/nuget/
 
     - name: Run Semantic Release
       shell: bash
@@ -158,40 +155,6 @@ jobs:
         echo RELEASE_VERSION=$(cat semver) >> $GITHUB_ENV
       shell: bash
 
-  publish_to_nuget:
-    needs: [ release ]
-    if: ${{ (github.repository_owner == 'Informatievlaanderen') && (needs.release.outputs.version != 'none') }}
-    name: Publish to NuGet
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout Code
-      uses: actions/checkout@v3
-
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v2
-      with:
-        dotnet-version: ${{ secrets.VBR_DOTNET_VERSION }}
-
-    - name: .NET version
-      shell: bash
-      run: dotnet --info
-
-    # - name: Download NuGet package ops-web
-    #   uses: actions/download-artifact@v3
-    #   with:
-    #     name: nuget-Be.Vlaanderen.Basisregisters.Ops.Web-${{ needs.release.outputs.version }}
-    #     path: ~/
-
-    # - name: Publish packages to NuGet
-    #   shell: bash
-    #   run: |
-    #     dotnet nuget push ~/Be.Vlaanderen.Basisregisters.Ops.Web.$SEMVER.nupkg --source nuget.org --api-key $NUGET_API_KEY
-    #   env:
-    #     SEMVER: ${{  needs.release.outputs.version }}
-    #     WORKSPACE: ${{ github.workspace }}
-    #     NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-
   publish_to_atlassian:
     needs: [ release ]
     if: ${{ (github.repository_owner == 'Informatievlaanderen') && (needs.release.outputs.version != 'none') }}
@@ -199,14 +162,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Parse repository name
         run: echo REPOSITORY_NAME=$(echo "$GITHUB_REPOSITORY" | awk -F / '{print $2}' | sed -e "s/:refs//") >> $GITHUB_ENV
         shell: bash
 
       - name: Cache Paket
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         env:
           cache-name: cache-paket
         with:
@@ -216,7 +179,7 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
 
       - name: Cache Python
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         env:
           cache-name: cache-pip
         with:
@@ -224,7 +187,7 @@ jobs:
           key: ${{ runner.os }}-build-${{ env.cache-name }}
 
       - name: Setup Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
@@ -261,11 +224,11 @@ jobs:
           aws-region: ${{ secrets.VBR_AWS_REGION_PRD }}
 
       - name: Login to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v1.5.3
+        uses: aws-actions/amazon-ecr-login@v2
 
       # Download artifact
       - name: Download artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         continue-on-error: false
         with:
           name: ${{ matrix.image }}-${{ needs.release.outputs.version }}
@@ -312,11 +275,11 @@ jobs:
           aws-region: ${{ secrets.VBR_AWS_REGION_PRD }}
 
       - name: Login to Amazon ECR (Staging)
-        uses: aws-actions/amazon-ecr-login@v1.5.3
+        uses: aws-actions/amazon-ecr-login@v2
 
       # Download artifact
       - name: Download artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         continue-on-error: false
         with:
           name: ${{ matrix.image }}-${{ needs.release.outputs.version }}
@@ -363,11 +326,11 @@ jobs:
           aws-region: ${{ secrets.VBR_AWS_REGION_PRD }}
 
       - name: Login to Amazon ECR (Production)
-        uses: aws-actions/amazon-ecr-login@v1.5.3
+        uses: aws-actions/amazon-ecr-login@v2
 
       # Download artifact
       - name: Download artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         continue-on-error: false
         with:
           name: ${{ matrix.image }}-${{ needs.release.outputs.version }}
@@ -408,7 +371,7 @@ jobs:
       shell: bash
 
     - name: Notify deployment started
-      uses: slackapi/slack-github-action@v1.23.0
+      uses: slackapi/slack-github-action@v1.25.0
       with:
         channel-id: '#team-dinosaur-dev'
         slack-message: Deployment of ops-web to test has started
@@ -462,7 +425,7 @@ jobs:
       shell: bash
 
     - name: Notify deployment finished
-      uses: slackapi/slack-github-action@v1.23.0
+      uses: slackapi/slack-github-action@v1.25.0
       with:
         channel-id: '#team-dinosaur-dev'
         slack-message: Deployment of ops-web to test has finished
@@ -484,7 +447,7 @@ jobs:
       shell: bash
 
     - name: Notify deployment started
-      uses: slackapi/slack-github-action@v1.23.0
+      uses: slackapi/slack-github-action@v1.25.0
       with:
         channel-id: '#team-dinosaur-dev'
         slack-message: Deployment of ops-web to staging has started
@@ -538,7 +501,7 @@ jobs:
       shell: bash
 
     - name: Notify deployment finished
-      uses: slackapi/slack-github-action@v1.23.0
+      uses: slackapi/slack-github-action@v1.25.0
       with:
         channel-id: '#team-dinosaur-dev'
         slack-message: Deployment of ops-web to staging has finished
@@ -560,7 +523,7 @@ jobs:
       shell: bash
 
     - name: Notify deployment started
-      uses: slackapi/slack-github-action@v1.23.0
+      uses: slackapi/slack-github-action@v1.25.0
       with:
         channel-id: '#team-dinosaur-dev'
         slack-message: Deployment of ops-web to new production has started
@@ -614,7 +577,7 @@ jobs:
       shell: bash
 
     - name: Notify deployment finished
-      uses: slackapi/slack-github-action@v1.23.0
+      uses: slackapi/slack-github-action@v1.25.0
       with:
         channel-id: '#team-dinosaur-dev'
         slack-message: Deployment of ops-web to production has finished
