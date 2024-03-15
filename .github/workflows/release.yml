@@ -249,9 +249,8 @@ jobs:
           echo $IMAGE:$SEMVER
           docker tag $BUILD_DOCKER_REGISTRY_TST/grar-ops/$IMAGE:$SEMVER $BUILD_DOCKER_REGISTRY/grar-ops/$IMAGE:$SEMVER
           docker push $BUILD_DOCKER_REGISTRY/grar-ops/$IMAGE:$SEMVER
-        env:
-          BUILD_DOCKER_REGISTRY_TST: ${{ secrets.VBR_BUILD_DOCKER_REGISTRY_TST }}
-          BUILD_DOCKER_REGISTRY: ${{ secrets.VBR_DEVOPS_DOCKER_REGISTRY }}
+        env:          
+          BUILD_DOCKER_REGISTRY: ${{ vars.VBR_DEVOPS_DOCKER_REGISTRY }}
           IMAGE: ${{ matrix.image }}
           SEMVER: ${{ needs.release.outputs.version }}
           WORKSPACE: ${{ github.workspace }}
@@ -301,7 +300,7 @@ jobs:
           docker tag $BUILD_DOCKER_REGISTRY_TST/grar-ops/$IMAGE:$SEMVER $BUILD_DOCKER_REGISTRY/grar-ops/$IMAGE:$SEMVER
           docker push $BUILD_DOCKER_REGISTRY/grar-ops/$IMAGE:$SEMVER
         env:
-          BUILD_DOCKER_REGISTRY_TST: ${{ secrets.VBR_BUILD_DOCKER_REGISTRY_TST }}
+          BUILD_DOCKER_REGISTRY_TST: ${{ vars.VBR_DEVOPS_DOCKER_REGISTRY }}
           BUILD_DOCKER_REGISTRY: ${{ secrets.VBR_BUILD_DOCKER_REGISTRY }}
           IMAGE: ${{ matrix.image }}
           SEMVER: ${{ needs.release.outputs.version }}
@@ -352,7 +351,7 @@ jobs:
           docker tag $BUILD_DOCKER_REGISTRY_TST/grar-ops/$IMAGE:$SEMVER $BUILD_DOCKER_REGISTRY_NEWPRD/grar-ops/$IMAGE:$SEMVER
           docker push $BUILD_DOCKER_REGISTRY_NEWPRD/grar-ops/$IMAGE:$SEMVER
         env:
-          BUILD_DOCKER_REGISTRY_TST: ${{ secrets.VBR_BUILD_DOCKER_REGISTRY_TST }}
+          BUILD_DOCKER_REGISTRY_TST: ${{ vars.VBR_DEVOPS_DOCKER_REGISTRY }}
           BUILD_DOCKER_REGISTRY_NEWPRD: ${{ secrets.VBR_BUILD_DOCKER_REGISTRY_NEWPRD }}
           IMAGE: ${{ matrix.image }}
           SEMVER: ${{ needs.release.outputs.version }}
