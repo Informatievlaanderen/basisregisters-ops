@@ -67,7 +67,7 @@ jobs:
       test-project: Ops.Web.Tests
       build-project: Ops.Web
       semver: ${{ needs.set-release-version.outputs.version }}
-      runtime: linux-arm64
+      runtime: linux-x64
       dotnet-version: ${{ vars.VBR_DOTNET_VERSION_8 }}
     secrets: inherit
 
