@@ -61,13 +61,13 @@ jobs:
     needs: [ set-release-version ]
     if: ${{ (github.repository_owner == 'Informatievlaanderen') && (needs.set-release-version.outputs.version != 'none') }}
     with:
-      registry: grar-ops
-      build-target: Containerize_OpsWeb
+      registry: ${{ vars.VBR_DEVOPS_DOCKER_REGISTRY }}/grar-ops   
       image-file: dashboard-image.tar
       image-name: dashboard
       test-project: Ops.Web.Tests
       build-project: Ops.Web
       semver: ${{ needs.set-release-version.outputs.version }}
+      dotnet-version: ${{ vars.VBR_DOTNET_VERSION_8 }}
     secrets: inherit
 
   release:
