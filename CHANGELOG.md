@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v2.0.2...v2.1.0) (2024-03-15)
+
+
+### Features
+
+* to arm 64 ([2f4fc8e](https://github.com/Informatievlaanderen/basisregisters-ops/commit/2f4fc8e45e5a2ab59e48345a9bfbd7fee764a015))
+
 ## [2.0.2](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v2.0.1...v2.0.2) (2024-03-15)
 
 
