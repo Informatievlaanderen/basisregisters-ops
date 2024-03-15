@@ -1,3 +1,11 @@
+## [2.0.2](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v2.0.1...v2.0.2) (2024-03-15)
+
+
+### Bug Fixes
+
+* copy appsetting and dockerfile to 8.0.2 ([4900d2e](https://github.com/Informatievlaanderen/basisregisters-ops/commit/4900d2eee22f23bda30528f6f30d1a125fee8e02))
+* release push images devops ([2c59cd7](https://github.com/Informatievlaanderen/basisregisters-ops/commit/2c59cd7d5a1df5bd73627ba0da6c3219b1ab5f81))
+
 ## [2.0.1](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v2.0.0...v2.0.1) (2024-03-15)
 
 
