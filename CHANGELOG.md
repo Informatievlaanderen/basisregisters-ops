@@ -1,3 +1,10 @@
+## [2.1.1](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v2.1.0...v2.1.1) (2024-03-15)
+
+
+### Bug Fixes
+
+* **bump:** add build badge + test arm 64 release ([27b78f2](https://github.com/Informatievlaanderen/basisregisters-ops/commit/27b78f2cffe8a41563416cbb891633a48c0549bf))
+
 # [2.1.0](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v2.0.2...v2.1.0) (2024-03-15)
 
 
