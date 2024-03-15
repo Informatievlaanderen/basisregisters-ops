@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v2.0.0...v2.0.1) (2024-03-15)
+
+
+### Bug Fixes
+
+* **ci:**  push images ([a1a2942](https://github.com/Informatievlaanderen/basisregisters-ops/commit/a1a294239486657f1f72ad572a184b161d950ac3))
+
 # [2.0.0](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v1.2.3...v2.0.0) (2024-03-15)
 
 
