@@ -7,6 +7,7 @@ using TicketingService.Abstractions;
 public class TicketsFilter
 {
     public const int Limit = 50;
+    public const int MinutesAfterStaleTicket = 5;
 
     public static TicketsFilter Default => new(1);
 
@@ -57,7 +58,7 @@ public class TicketsFilter
         Statuses[TicketStatus.Complete] = false;
 
         Since = DateTimeOffset.Now.Date;
-        To = DateTimeOffset.Now.Subtract(TimeSpan.FromMinutes(15)).DateTime;
+        To = DateTimeOffset.Now.Subtract(TimeSpan.FromMinutes(MinutesAfterStaleTicket)).DateTime;
 
         CurrentPage = 1;
     }
@@ -72,7 +73,7 @@ public class TicketsFilter
         Statuses[TicketStatus.Complete] = false;
 
         Since = DateTimeOffset.Now.Date.Subtract(TimeSpan.FromDays(3));
-        To = DateTimeOffset.Now.Subtract(TimeSpan.FromDays(15)).DateTime;
+        To = DateTimeOffset.Now.Subtract(TimeSpan.FromMinutes(MinutesAfterStaleTicket)).DateTime;
 
         CurrentPage = 1;
     }
