@@ -1,3 +1,10 @@
+## [2.1.2](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v2.1.1...v2.1.2) (2024-03-29)
+
+
+### Bug Fixes
+
+* last 3 days open tickets filter ([6ad474b](https://github.com/Informatievlaanderen/basisregisters-ops/commit/6ad474bc9ed5c1cc80f5aebc2cb27869e6205f34))
+
 ## [2.1.1](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v2.1.0...v2.1.1) (2024-03-15)
 
 
