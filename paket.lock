@@ -31,6 +31,7 @@ NUGET
     Be.Vlaanderen.Basisregisters.Utilities.HashCodeCalculator (4.0) - copy_local: true, copy_content_to_output_dir: always, content: true
     Be.Vlaanderen.Basisregisters.Utilities.HexByteConvertor (4.0) - copy_local: true, copy_content_to_output_dir: always, content: true
     Be.Vlaanderen.Basisregisters.Utilities.ToStringBuilder (4.0) - copy_local: true, copy_content_to_output_dir: always, content: true
+    CsvHelper (32.0.1)
     FluentAssertions (6.12) - copy_local: true, copy_content_to_output_dir: always, content: true
       System.Configuration.ConfigurationManager (>= 4.4)
     Flurl (4.0)

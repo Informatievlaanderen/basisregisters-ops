@@ -1,0 +1,8 @@
+Be.Vlaanderen.Basisregisters.TicketingService.Abstractions
+Be.Vlaanderen.Basisregisters.TicketingService.Proxy.HttpProxy
+
+IdentityModel
+CsvHelper
+
+SourceLink.Embed.AllSourceFiles
+SourceLink.Copy.PdbFiles
