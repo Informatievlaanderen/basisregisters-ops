@@ -1,6 +1,7 @@
 namespace Ops.Console
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Globalization;
     using System.IO;
@@ -16,7 +17,7 @@ namespace Ops.Console
 
     public sealed class Program
     {
-        private const string TokendEndpoint = "https://authenticatie.vlaanderen.be/op/v1/token";
+        private const string TokenEndpoint = "https://authenticatie.vlaanderen.be/op/v1/token";
 
         private const string RequiredScopes =
             "dv_ar_adres_beheer dv_ar_adres_uitzonderingen dv_gr_geschetstgebouw_beheer dv_gr_geschetstgebouw_uitzonderingen dv_gr_ingemetengebouw_uitzonderingen";
@@ -29,10 +30,12 @@ namespace Ops.Console
         {
             HasHeaderRecord = true,
             Delimiter = ";",
+            Encoding = System.Text.Encoding.UTF8,
         };
 
         protected Program()
-        { }
+        {
+        }
 
         public static async Task Main(string[] args)
         {
@@ -47,63 +50,89 @@ namespace Ops.Console
             _clientId = configuration.GetValue<string>("ClientId");
             _clientSecret = configuration.GetValue<string>("ClientSecret");
 
-            var csvConfiguration = CsvConfiguration;
-
             const string actionUrl =
                 "https://api.basisregisters.vlaanderen.be/v2/gebouweenheden/{0}/acties/corrigeren/realisatie";
 
             var inputCsvPath = configuration.GetValue<string>("InputCsvPath");
             var outputCsvPath = configuration.GetValue<string>("OutputCsvPath");
 
-            var buildingUnitPersistentLocalIdsToProcess =
-                GetBuildingUnitPersistentLocalIds(inputCsvPath, csvConfiguration, outputCsvPath);
-
-            //
-            // using var streamReader = new StreamReader(inputCsvPath!);
-            // using var csvReader = new CsvReader(streamReader, csvConfiguration);
-
-            var fileStream = new FileStream(outputCsvPath!, FileMode.Append);
-            await using var streamWriter = new StreamWriter(fileStream);
-            await using var csvWriter = new CsvWriter(streamWriter, csvConfiguration);
+            var idsToProcess = GetIdsToProcess(inputCsvPath, outputCsvPath);
 
             var client = new HttpClient();
-            foreach (var buildingUnitPersistentLocalId in buildingUnitPersistentLocalIdsToProcess)
+            var processedRecords = new ConcurrentBag<ProcessedRecord>();
+            try
             {
-                var requestUrl = string.Format(actionUrl, buildingUnitPersistentLocalId);
-
-                client.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue("Bearer", await GetAccessToken());
-                var response = await client.PostAsync(requestUrl, null);
-
-                // Ensure the post was successful
-                if (response.IsSuccessStatusCode)
+                foreach (var id in idsToProcess)
                 {
-                    var ticketUri = response.Headers.Location;
-                }
-                else
-                {
+                    Console.WriteLine($"Processing id: {id}");
+
+                    try
+                    {
+                        var requestUrl = string.Format(actionUrl, id);
+
+                        client.DefaultRequestHeaders.Authorization =
+                            new AuthenticationHeaderValue("Bearer", await GetAccessToken());
+                        var response = await client.PostAsync(requestUrl, null);
+
+                        // Ensure the post was successful
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var ticketUri = response.Headers.Location;
+                            processedRecords.Add(new ProcessedRecord(id, ticketUri.ToString()));
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Failed to process id: {id}");
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"Failed to process id: {id}");
+                        Console.WriteLine(e);
+                        throw;
+                    }
                 }
             }
+            finally
+            {
+                var fileStream = new FileStream(outputCsvPath!, FileMode.Append);
+                await using var streamWriter = new StreamWriter(fileStream);
+                await using var csvWriter = new CsvWriter(streamWriter, CsvConfiguration);
+                csvWriter.Context.RegisterClassMap<ProcessedRecordMap>();
+                await csvWriter.WriteRecordsAsync(processedRecords);
+                await csvWriter.FlushAsync();
+                await csvWriter.DisposeAsync();
+            }
+
+            //TODO: get processed records and call ticketurl, make output to csv where the ticket is status complete or error
+
+            Console.WriteLine("Processing complete. Press any key to exit.");
+            Console.Read();
         }
 
-        private static List<string> GetBuildingUnitPersistentLocalIds(string? inputCsvPath,
-            string? outputCsvPath)
+        private static List<string> GetIdsToProcess(
+            string? inputCsvPath,
+            string? processedCsvPath)
         {
-            CsvConfiguration csvConfiguration;
-
             using var inputStreamReader = new StreamReader(inputCsvPath!);
-            using var inputCsvReader = new CsvReader(inputStreamReader, csvConfiguration);
+            using var inputCsvReader = new CsvReader(inputStreamReader, CsvConfiguration);
+            var inputIds = inputCsvReader.GetRecords<string>();
 
-            using var outputStreamReader = new StreamReader(outputCsvPath!);
-            using var outputCsvReader = new CsvReader(inputStreamReader, csvConfiguration);
+            var processedIds = GetProcessedIds(processedCsvPath);
 
-            var buildingUnitPersistentLocalIds = inputCsvReader.GetRecords<string>();
-            var processedBuildingUnitPersistentLocalIds = outputCsvReader.GetRecords<ProcessedBuildingUnit>()
+            var idsToProcess = inputIds.Except(processedIds).ToList();
+            return idsToProcess;
+        }
+
+        private static IEnumerable<string> GetProcessedIds(string? processedCsvPath)
+        {
+            using var outputStreamReader = new StreamReader(processedCsvPath!);
+            using var outputCsvReader = new CsvReader(outputStreamReader, CsvConfiguration);
+            outputCsvReader.Context.RegisterClassMap<ProcessedRecordMap>();
+
+            var processedIds = outputCsvReader.GetRecords<ProcessedRecord>()
                 .Select(x => x.Id);
-
-            var buildingUnitPersistentLocalIdsToProcess =
-                buildingUnitPersistentLocalIds.Except(processedBuildingUnitPersistentLocalIds).ToList();
-            return buildingUnitPersistentLocalIdsToProcess;
+            return processedIds;
         }
 
         private static async Task<string> GetAccessToken()
@@ -117,7 +146,7 @@ namespace Ops.Console
                 () => new HttpClient(),
                 new TokenClientOptions
                 {
-                    Address = TokendEndpoint,
+                    Address = TokenEndpoint,
                     ClientId = _clientId!,
                     ClientSecret = _clientSecret,
                     Parameters = new Parameters(new[] { new KeyValuePair<string, string>("scope", RequiredScopes) })
@@ -131,10 +160,18 @@ namespace Ops.Console
         }
     }
 
-    public record ProcessedBuildingUnit(string Id, string TicketUrl);
+    public record ProcessedRecord(string Id, string TicketUrl);
 
+    public class ProcessedRecordMap : ClassMap<ProcessedRecord>
+    {
+        public ProcessedRecordMap()
+        {
+            Map(m => m.Id).Name("Id");
+            Map(m => m.TicketUrl).Name("Ticket");
+        }
+    }
 
-    public class AccessToken
+    public sealed class AccessToken
     {
         private readonly DateTime _expiresAt;
 
