@@ -45,12 +45,19 @@ namespace Ops.Console
 
             var inputCsvPath = configuration.GetValue<string>("InputCsvPath");
             var outputCsvPath = configuration.GetValue<string>("OutputCsvPath");
+            var apiKey = configuration.GetValue<string>("ApiKey");
 
             var idsToProcess = GetIdsToProcess(inputCsvPath, outputCsvPath);
 
             var cts = new CancellationTokenSource();
             var client = new HttpClient();
+            if (!string.IsNullOrWhiteSpace(apiKey))
+            {
+                client.DefaultRequestHeaders.Add("x-api-key", apiKey);
+            }
+
             var processedRecords = new ConcurrentBag<ProcessedRecord>();
+            var unprocessedRecords = new ConcurrentBag<string>();
             try
             {
                 await Parallel.ForEachAsync(
@@ -75,10 +82,11 @@ namespace Ops.Console
                         if (response.IsSuccessStatusCode)
                         {
                             var ticketUri = response.Headers.Location;
-                            processedRecords.Add(new ProcessedRecord(id, ticketUri.ToString()));
+                            processedRecords.Add(new ProcessedRecord(id, ticketUri!.ToString()));
                         }
                         else
                         {
+                            unprocessedRecords.Add(id);
                             Console.WriteLine($"Failed to process id: {id}");
                         }
                     }
@@ -90,6 +98,15 @@ namespace Ops.Console
                         throw;
                     }
                 });
+
+                if (unprocessedRecords.Any())
+                {
+                    Console.WriteLine("Failed to process following records");
+                    foreach (var unprocessedRecord in unprocessedRecords)
+                    {
+                        Console.WriteLine(unprocessedRecord);
+                    }
+                }
             }
             finally
             {
