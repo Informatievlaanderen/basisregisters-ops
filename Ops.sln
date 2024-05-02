@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ops.Web.Tests", "test\Ops.W
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ops.Console", "src\Ops.Console\Ops.Console.csproj", "{76FB4D24-D5EF-47D7-8F8C-B260EF4431F9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ops.Tickets.Console", "src\Ops.Tickets.Console\Ops.Tickets.Console.csproj", "{F77FC2CB-BD70-4640-A54E-3D433DF45598}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,6 +32,7 @@ Global
 		{1B99CF5A-159F-4434-AAAA-996C7B50A507} = {8ED67A50-116A-4250-BBAB-EED6377244B9}
 		{19EB08BE-7086-47B2-BD56-22E675B86D9F} = {42A894F8-BF47-43D2-9A25-3E35CE133E6E}
 		{76FB4D24-D5EF-47D7-8F8C-B260EF4431F9} = {8ED67A50-116A-4250-BBAB-EED6377244B9}
+		{F77FC2CB-BD70-4640-A54E-3D433DF45598} = {8ED67A50-116A-4250-BBAB-EED6377244B9}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{1B99CF5A-159F-4434-AAAA-996C7B50A507}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -44,5 +47,9 @@ Global
 		{76FB4D24-D5EF-47D7-8F8C-B260EF4431F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{76FB4D24-D5EF-47D7-8F8C-B260EF4431F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{76FB4D24-D5EF-47D7-8F8C-B260EF4431F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F77FC2CB-BD70-4640-A54E-3D433DF45598}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F77FC2CB-BD70-4640-A54E-3D433DF45598}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F77FC2CB-BD70-4640-A54E-3D433DF45598}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F77FC2CB-BD70-4640-A54E-3D433DF45598}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
