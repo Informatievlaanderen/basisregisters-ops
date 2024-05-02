@@ -93,18 +93,22 @@ namespace Ops.Console
             }
             finally
             {
+                if (GetProcessedIds(outputCsvPath).Any())
+                {
+                    CsvConfiguration.HasHeaderRecord = false;
+                }
+
                 var fileStream = new FileStream(outputCsvPath!, FileMode.Append);
                 await using var streamWriter = new StreamWriter(fileStream);
                 await using var csvWriter = new CsvWriter(streamWriter, CsvConfiguration);
-                //TODO: don't write header if file already exists
 
                 csvWriter.Context.RegisterClassMap<ProcessedRecordMap>();
                 await csvWriter.WriteRecordsAsync(processedRecords, CancellationToken.None);
                 await csvWriter.FlushAsync();
                 await csvWriter.DisposeAsync();
-            }
 
-            //TODO: get processed records and call ticketurl, make output to csv where the ticket is status complete or error
+                CsvConfiguration.HasHeaderRecord = true;
+            }
 
             Console.WriteLine("Processing complete. Press any key to exit.");
             Console.Read();
