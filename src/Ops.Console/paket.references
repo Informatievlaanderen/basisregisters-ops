@@ -1,0 +1,10 @@
+IdentityModel
+CsvHelper
+
+Microsoft.Extensions.Configuration.FileExtensions
+Microsoft.Extensions.Configuration.Json
+Microsoft.Extensions.Configuration.EnvironmentVariables
+Microsoft.Extensions.Configuration.Binder
+
+SourceLink.Embed.AllSourceFiles
+SourceLink.Copy.PdbFiles
