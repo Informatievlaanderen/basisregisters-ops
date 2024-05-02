@@ -41,7 +41,8 @@ namespace Ops.Console
             var acmIdmService = AcmIdmService.GetInstance(configuration);
 
             const string actionUrl =
-                "https://api.basisregisters.test-vlaanderen.be/v2/gebouweenheden/{0}/acties/corrigeren/realisering"; //CHANGE THIS for other environments
+                // "https://api.basisregisters.test-vlaanderen.be/v2/gebouweenheden/{0}/acties/corrigeren/realisering"; //CHANGE THIS for other environments
+                "https://api.basisregisters.test-vlaanderen.be/v2/gebouweenheden/{0}/acties/nietrealiseren"; //CHANGE THIS for other environments
 
             var inputCsvPath = configuration.GetValue<string>("InputCsvPath");
             var outputCsvPath = configuration.GetValue<string>("OutputCsvPath");
