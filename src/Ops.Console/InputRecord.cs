@@ -5,6 +5,8 @@ namespace Ops.Console
     public sealed class InputRecord
     {
         public string Id { get; init; }
+        public string Url {get; init; }
+        public string? Body { get; init; }
 
         protected InputRecord()
         { }
@@ -15,6 +17,8 @@ namespace Ops.Console
         public InputRecordMap()
         {
             Map(m => m.Id).Name("Id");
+            Map(m => m.Url).Name("Url");
+            Map(m => m.Body).Name("Body");
         }
     }
 }
