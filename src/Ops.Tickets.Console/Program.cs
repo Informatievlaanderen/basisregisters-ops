@@ -20,7 +20,7 @@
         private static readonly CsvConfiguration CsvConfiguration = new(CultureInfo.InvariantCulture)
         {
             HasHeaderRecord = true,
-            Delimiter = ";",
+            Delimiter = ",",
             Encoding = Encoding.UTF8,
         };
 
@@ -53,7 +53,7 @@
 
             var completedTickets = new ConcurrentBag<TicketRecord>();
             var errorTickets = new ConcurrentBag<TicketErrorRecord>();
-
+            var countProcessed = 0;
             try
             {
                 await Parallel.ForEachAsync(
@@ -64,7 +64,8 @@
                     if(token.IsCancellationRequested)
                         return;
 
-                    Console.WriteLine($"Processing ticket: {ticket.TicketUrl}");
+                    Interlocked.Increment(ref countProcessed);
+                    Console.WriteLine($"Processing ticket: {ticket.TicketUrl} ({Math.Round((double)countProcessed / tickets.Count * 100, 2)}%)");
 
                     try
                     {

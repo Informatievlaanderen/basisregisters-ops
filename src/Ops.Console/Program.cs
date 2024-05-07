@@ -8,6 +8,8 @@ namespace Ops.Console
     using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Headers;
+    using System.Net.Http.Json;
+    using System.Security.AccessControl;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
@@ -20,7 +22,7 @@ namespace Ops.Console
         private static readonly CsvConfiguration CsvConfiguration = new(CultureInfo.InvariantCulture)
         {
             HasHeaderRecord = true,
-            Delimiter = ";",
+            Delimiter = ",",
             Encoding = Encoding.UTF8,
         };
 
@@ -40,15 +42,12 @@ namespace Ops.Console
 
             var acmIdmService = AcmIdmService.GetInstance(configuration);
 
-            const string actionUrl =
-                // "https://api.basisregisters.test-vlaanderen.be/v2/gebouweenheden/{0}/acties/corrigeren/realisering"; //CHANGE THIS for other environments
-                "https://api.basisregisters.test-vlaanderen.be/v2/gebouweenheden/{0}/acties/nietrealiseren"; //CHANGE THIS for other environments
-
             var inputCsvPath = configuration.GetValue<string>("InputCsvPath");
             var outputCsvPath = configuration.GetValue<string>("OutputCsvPath");
             var apiKey = configuration.GetValue<string>("ApiKey");
 
             var idsToProcess = GetIdsToProcess(inputCsvPath, outputCsvPath);
+            Console.WriteLine($"Processing {idsToProcess.Count} records...");
 
             var cts = new CancellationTokenSource();
             var client = new HttpClient();
@@ -59,41 +58,55 @@ namespace Ops.Console
 
             var processedRecords = new ConcurrentBag<ProcessedRecord>();
             var unprocessedRecords = new ConcurrentBag<string>();
+            var countProcessed = 0;
             try
             {
                 await Parallel.ForEachAsync(
                     idsToProcess,
                     new ParallelOptions { MaxDegreeOfParallelism = 5, CancellationToken = cts.Token },
-                    async (id, token) =>
+                    async (inputRecord, token) =>
                 {
                     if(token.IsCancellationRequested)
                         return;
 
-                    Console.WriteLine($"Processing id: {id}");
+                    Interlocked.Increment(ref countProcessed);
+
+                    Console.WriteLine(
+                        $"Processing id: {inputRecord.Id} ({Math.Round((double)countProcessed / idsToProcess.Count * 100, 2)}%)");
 
                     try
                     {
-                        var requestUrl = string.Format(actionUrl, id);
+                        var requestUrl = inputRecord.Url;
 
                         client.DefaultRequestHeaders.Authorization =
                             new AuthenticationHeaderValue("Bearer", acmIdmService.GetAccessToken());
-                        var response = await client.PostAsync(requestUrl, null, token);
+
+                        HttpResponseMessage response;
+                        if (!string.IsNullOrWhiteSpace(inputRecord.Body))
+                        {
+                            var jsonDocument = System.Text.Json.JsonDocument.Parse(inputRecord.Body);
+                            response = await client.PostAsJsonAsync(requestUrl, jsonDocument, token);
+                        }
+                        else
+                        {
+                           response = await client.PostAsync(requestUrl, null, token);
+                        }
 
                         // Ensure the post was successful
                         if (response.IsSuccessStatusCode)
                         {
                             var ticketUri = response.Headers.Location;
-                            processedRecords.Add(new ProcessedRecord(id, ticketUri!.ToString()));
+                            processedRecords.Add(new ProcessedRecord(inputRecord.Id, ticketUri!.ToString()));
                         }
                         else
                         {
-                            unprocessedRecords.Add(id);
-                            Console.WriteLine($"Failed to process id: {id}");
+                            unprocessedRecords.Add(inputRecord.Id);
+                            Console.WriteLine($"Failed to process id: {inputRecord.Id}");
                         }
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine($"Failed to process id: {id}");
+                        Console.WriteLine($"Failed to process id: {inputRecord.Id}");
                         Console.WriteLine(e);
                         await cts.CancelAsync();
                         throw;
@@ -123,16 +136,13 @@ namespace Ops.Console
                 csvWriter.Context.RegisterClassMap<ProcessedRecordMap>();
                 await csvWriter.WriteRecordsAsync(processedRecords, CancellationToken.None);
                 await csvWriter.FlushAsync();
-                await csvWriter.DisposeAsync();
-
-                CsvConfiguration.HasHeaderRecord = true;
             }
 
             Console.WriteLine("Processing complete. Press any key to exit.");
             Console.Read();
         }
 
-        private static List<string> GetIdsToProcess(
+        private static List<InputRecord> GetIdsToProcess(
             string? inputCsvPath,
             string? processedCsvPath)
         {
@@ -140,11 +150,10 @@ namespace Ops.Console
             using var inputCsvReader = new CsvReader(inputStreamReader, CsvConfiguration);
             inputCsvReader.Context.RegisterClassMap<InputRecordMap>();
 
-            var inputIds = inputCsvReader.GetRecords<InputRecord>().Select(x => x.Id).ToList();
+            var inputRecords = inputCsvReader.GetRecords<InputRecord>().ToList();
             var processedIds = GetProcessedIds(processedCsvPath);
 
-            var idsToProcess = inputIds.Except(processedIds).ToList();
-            return idsToProcess;
+            return inputRecords.Where(x => !processedIds.Contains(x.Id)).ToList();
         }
 
         private static IList<string> GetProcessedIds(string? processedCsvPath)
