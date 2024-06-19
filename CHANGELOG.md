@@ -1,3 +1,11 @@
+# [2.2.0](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v2.1.2...v2.2.0) (2024-06-19)
+
+
+### Features
+
+* add fix retired / notrealized / removed BU address link ([837c9a2](https://github.com/Informatievlaanderen/basisregisters-ops/commit/837c9a25314a7e9348a14fed26a166f716559e0b))
+* add ops console + ticket console + first input-output result ([1d68699](https://github.com/Informatievlaanderen/basisregisters-ops/commit/1d686998a61a04e7a35b3bff361a02db79d5e316))
+
 ## [2.1.2](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v2.1.1...v2.1.2) (2024-03-29)
 
 
