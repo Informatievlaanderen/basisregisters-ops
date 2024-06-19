@@ -333,7 +333,7 @@ jobs:
 
   deploy_to_staging_start_slack:
     if: github.repository_owner == 'Informatievlaanderen'
-    needs: [ push_images_to_staging, release ]
+    needs: [ deploy_to_test_finish_slack, release ]
     name: Deploy to staging started
     environment: stg
     runs-on: ubuntu-latest
