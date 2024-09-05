@@ -7,7 +7,7 @@ NUGET
       Be.Vlaanderen.Basisregisters.Utilities.ToStringBuilder (>= 4.0)
       Newtonsoft.Json (>= 13.0.3)
       NodaTime (>= 3.1.11)
-    Be.Vlaanderen.Basisregisters.Build.Pipeline (7.1)
+    Be.Vlaanderen.Basisregisters.Build.Pipeline (7.2.6)
     Be.Vlaanderen.Basisregisters.Converters.TrimString (4.0) - copy_local: true, copy_content_to_output_dir: always, content: true
       Newtonsoft.Json (>= 13.0.3)
     Be.Vlaanderen.Basisregisters.EventHandling (5.0) - copy_local: true, copy_content_to_output_dir: always, content: true
