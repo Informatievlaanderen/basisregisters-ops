@@ -43,6 +43,8 @@ else
         </th>
         <th>
           Created
+          <input class="form-control" type="datetime-local" @bind="JobsFilter.Since">
+          To <input class="form-control" type="datetime-local" @bind="JobsFilter.To">
         </th>
         <th>Last changed</th>
         <th></th>
@@ -57,8 +59,8 @@ else
         <tr>
           <td>@job.Id</td>
           <td>@job.Status</td>
-          <td>@job.Created.ToString("s")</td>
-          <td>@job.LastChanged.ToString("s")</td>
+          <td>@job.Created.ToLocalTime().ToString("s")</td>
+          <td>@job.LastChanged.ToLocalTime().ToString("s")</td>
           <td>
             @if (job.HasTicket())
             {
