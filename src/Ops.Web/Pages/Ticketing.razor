@@ -71,8 +71,8 @@ else
             <a href="@(CreateTicketingUrl(ticket.TicketId))" target="_blank">@ticket.TicketId</a>
           </td>
           <td>@ticket.Status</td>
-          <td>@ticket.Created.ToString("s")</td>
-          <td>@ticket.LastModified.ToString("s")</td>
+          <td>@ticket.Created.ToLocalTime().ToString("s")</td>
+          <td>@ticket.LastModified.ToLocalTime().ToString("s")</td>
           @* <td> *@
           @*   <a class="btn btn-info" @onclick="() => OpenDialog(ticket.TicketId, TicketStatus.Complete)">Complete</a> *@
           @*   <a class="btn btn-warning" @onclick="() => OpenDialog(ticket.TicketId, TicketStatus.Error)">Error</a> *@

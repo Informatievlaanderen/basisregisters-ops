@@ -57,8 +57,8 @@ public class TicketsFilter
         Statuses[TicketStatus.Error] = false;
         Statuses[TicketStatus.Complete] = false;
 
-        Since = DateTimeOffset.Now.Date;
-        To = DateTimeOffset.Now.Subtract(TimeSpan.FromMinutes(MinutesAfterStaleTicket)).DateTime;
+        Since = DateTime.Now.Date;
+        To = DateTime.Now.Subtract(TimeSpan.FromMinutes(MinutesAfterStaleTicket));
 
         CurrentPage = 1;
     }
@@ -72,8 +72,8 @@ public class TicketsFilter
         Statuses[TicketStatus.Error] = false;
         Statuses[TicketStatus.Complete] = false;
 
-        Since = DateTimeOffset.Now.Date.Subtract(TimeSpan.FromDays(3));
-        To = DateTimeOffset.Now.Subtract(TimeSpan.FromMinutes(MinutesAfterStaleTicket)).DateTime;
+        Since = DateTime.Now.Date.Subtract(TimeSpan.FromDays(3));
+        To = DateTime.Now.Subtract(TimeSpan.FromMinutes(MinutesAfterStaleTicket));
 
         CurrentPage = 1;
     }
