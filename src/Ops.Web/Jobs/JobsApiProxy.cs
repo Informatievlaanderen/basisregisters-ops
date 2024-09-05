@@ -27,7 +27,7 @@
         private readonly AuthOptions _authOptions;
         private readonly JsonSerializerOptions _jsonSerializerOptions;
 
-        private IDictionary<string, AccessToken> _accessTokens;
+        private readonly IDictionary<string, AccessToken> _accessTokens;
 
         public JobsApiProxy(HttpClient httpClient, IOptions<JobsOptions> jobsOptions, IOptions<AuthOptions> authOptions)
         {
@@ -54,6 +54,12 @@
             location = location.SetQueryParam("statuses", filter.Statuses.Where(x => x.Value).Select(x => (int)x.Key));
             location = location.SetQueryParam("offset", (filter.CurrentPage - 1) * TicketsFilter.Limit);
             location = location.SetQueryParam("limit", TicketsFilter.Limit);
+
+            if (filter.Since.HasValue)
+                location = location.SetQueryParam("fromDate", filter.Since.Value.ToString("s"));
+
+            if (filter.To.HasValue)
+                location = location.SetQueryParam("toDate", filter.To.Value.ToString("s"));
 
             _httpClient.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", await GetAccessToken(DvGrIngemetengebouwBeheerScope));

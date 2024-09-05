@@ -11,6 +11,9 @@ public class JobsFilter
 
     public static JobsFilter Default => new(1);
 
+    public DateTime? Since { get; set; }
+    public DateTime? To { get; set; }
+
     private string? _jobId;
     public string? JobId
     {
