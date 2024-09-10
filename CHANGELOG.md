@@ -1,3 +1,15 @@
+# [2.3.0](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v2.2.0...v2.3.0) (2024-09-10)
+
+
+### Bug Fixes
+
+* datetime issues ticketing ([f1b12e1](https://github.com/Informatievlaanderen/basisregisters-ops/commit/f1b12e12eaf9e06e3cdd999c6909430673090fd6))
+
+
+### Features
+
+* add datefilters for grbjobs ([e45c2c2](https://github.com/Informatievlaanderen/basisregisters-ops/commit/e45c2c2dabbefce6c364a0de680a8f36274e17d2))
+
 # [2.2.0](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v2.1.2...v2.2.0) (2024-06-19)
 
 
