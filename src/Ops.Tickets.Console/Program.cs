@@ -75,7 +75,8 @@
                             {
                                 try
                                 {
-                                    var response = await client.GetFromJsonAsync<TicketResponse>(ticket.TicketUrl, token);
+                                    var response =
+                                        await client.GetFromJsonAsync<TicketResponse>(ticket.TicketUrl, token);
 
                                     done = response!.Status.Equals("complete") || response.Status.Equals("error");
                                     if (!done)
@@ -100,11 +101,16 @@
                                     if (ex.Response is HttpWebResponse response
                                         && response.StatusCode == HttpStatusCode.TooManyRequests)
                                     {
-                                        await Task.Delay(50);
+                                        await Task.Delay(50, token);
                                         continue;
                                     }
 
                                     throw;
+                                }
+                                catch (HttpRequestException ex) when (ex.Message == "Response status code does not indicate success: 429.")
+                                {
+                                    await Task.Delay(50, token);
+                                    continue;
                                 }
 
                                 done = true;
