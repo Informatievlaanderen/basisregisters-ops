@@ -9,8 +9,8 @@ namespace Ops.Console
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Net.Http.Json;
-    using System.Security.AccessControl;
     using System.Text;
+    using System.Text.Json;
     using System.Threading;
     using System.Threading.Tasks;
     using CsvHelper;
@@ -76,7 +76,7 @@ namespace Ops.Console
 
                     try
                     {
-                        var requestUrl = inputRecord.Url;
+                        var requestUrl = inputRecord.Url.Replace("{id}", inputRecord.Id);
 
                         client.DefaultRequestHeaders.Authorization =
                             new AuthenticationHeaderValue("Bearer", acmIdmService.GetAccessToken());
@@ -84,7 +84,7 @@ namespace Ops.Console
                         HttpResponseMessage response;
                         if (!string.IsNullOrWhiteSpace(inputRecord.Body))
                         {
-                            var jsonDocument = System.Text.Json.JsonDocument.Parse(inputRecord.Body);
+                            var jsonDocument = JsonDocument.Parse(inputRecord.Body);
                             response = await client.PostAsJsonAsync(requestUrl, jsonDocument, token);
                         }
                         else
