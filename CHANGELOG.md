@@ -1,3 +1,26 @@
+# [3.0.0](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v2.3.0...v3.0.0) (2025-04-16)
+
+
+### Bug Fixes
+
+* deal with 429 and extra logging ([5821be7](https://github.com/Informatievlaanderen/basisregisters-ops/commit/5821be7f21a65391da8798cfdde41867b2aad9ca))
+* handle 429 response ([c90a273](https://github.com/Informatievlaanderen/basisregisters-ops/commit/c90a273c7c3aa15233d87a631469cd771004183a))
+
+
+### Code Refactoring
+
+* use renovate and nuget + update pipeline ([d7998ce](https://github.com/Informatievlaanderen/basisregisters-ops/commit/d7998ced9f5aa22427cbd8569a6b1aa3c1025185))
+
+
+### Features
+
+* add merger Antwerpen addresses archive ([ef3ff17](https://github.com/Informatievlaanderen/basisregisters-ops/commit/ef3ff17165f0f26aea2be0adb36f292856391fd1))
+
+
+### BREAKING CHANGES
+
+* update to dotnet 9
+
 # [2.3.0](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v2.2.0...v2.3.0) (2024-09-10)
 
 
