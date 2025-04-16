@@ -1,9 +1,0 @@
-Be.Vlaanderen.Basisregisters.Grb.Building.Api.Abstractions
-Be.Vlaanderen.Basisregisters.TicketingService.Abstractions
-Be.Vlaanderen.Basisregisters.TicketingService.Proxy.HttpProxy
-
-Flurl
-IdentityModel
-
-SourceLink.Embed.AllSourceFiles
-SourceLink.Copy.PdbFiles

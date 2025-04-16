@@ -3,8 +3,8 @@
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
-    using IdentityModel;
-    using IdentityModel.Client;
+    using Duende.IdentityModel;
+    using Duende.IdentityModel.Client;
     using Microsoft.Extensions.Configuration;
 
     public sealed class AcmIdmService

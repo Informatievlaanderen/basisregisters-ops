@@ -13,8 +13,8 @@
     using Flurl;
     using Grb;
     using Grb.Building.Api.Abstractions.Responses;
-    using IdentityModel;
-    using IdentityModel.Client;
+    using Duende.IdentityModel;
+    using Duende.IdentityModel.Client;
     using Microsoft.Extensions.Options;
     using Ticketing;
 
