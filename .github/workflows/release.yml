@@ -378,7 +378,7 @@ jobs:
         token: ${{ secrets.VBR_SLACK_BOT_TOKEN }}
         payload: |
           channel: '#team-dinosaur-dev'
-          text: 'Deployment of ops-web to staging has finished
+          text: 'Deployment of ops-web to staging has finished'
 
   deploy_to_production_start_slack:
     if: github.repository_owner == 'Informatievlaanderen'
