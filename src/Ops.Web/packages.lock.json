@@ -4,9 +4,9 @@
     "net9.0": {
       "Be.Vlaanderen.Basisregisters.Grb.Building.Api.Abstractions": {
         "type": "Direct",
-        "requested": "[2.5.1, )",
-        "resolved": "2.5.1",
-        "contentHash": "KtLADsv1ROB2PAzDjA53/vLkjANsv8cWgfB2dUsDAfvNcZM7IbvJ3WeH6G1GHbJn1x0EEj8wInvra9kGInsgvA==",
+        "requested": "[3.0.0, )",
+        "resolved": "3.0.0",
+        "contentHash": "/Gpwrr8uR9Wgk4/7Nc5wgyG1uGFSflXI7l3mnv1zZkwK6+Zd3HokUaTP027JvLlgUH7IbyiKQtzzgtEuiovc9w==",
         "dependencies": {
           "MediatR.Contracts": "2.0.1"
         }
