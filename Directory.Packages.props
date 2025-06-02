@@ -16,7 +16,7 @@
 
         <PackageVersion Include="Flurl" Version="4.0.0" />
         <PackageVersion Include="Duende.IdentityModel" Version="7.0.0" />
-        <PackageVersion Include="CsvHelper" Version="33.0.1" />
+        <PackageVersion Include="CsvHelper" Version="33.1.0" />
 
         <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
         <PackageVersion Include="xunit" Version="2.9.3" />
