@@ -11,7 +11,7 @@
         <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.4" />
 
         <PackageVersion Include="Be.Vlaanderen.Basisregisters.Grb.Building.Api.Abstractions" Version="2.5.1" />
-        <PackageVersion Include="Be.Vlaanderen.Basisregisters.TicketingService.Abstractions" Version="3.0.0" />
+        <PackageVersion Include="Be.Vlaanderen.Basisregisters.TicketingService.Abstractions" Version="3.2.3" />
         <PackageVersion Include="Be.Vlaanderen.Basisregisters.TicketingService.Proxy.HttpProxy" Version="3.0.0" />
 
         <PackageVersion Include="Flurl" Version="4.0.0" />
