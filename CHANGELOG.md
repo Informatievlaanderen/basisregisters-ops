@@ -1,3 +1,15 @@
+# [4.0.0](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v3.0.0...v4.0.0) (2026-06-12)
+
+
+### Features
+
+* update packages + upgrade to dotnet 10 ([a1f0d97](https://github.com/Informatievlaanderen/basisregisters-ops/commit/a1f0d9732e5ebc9029eae3aba4006d7b5e1b552f))
+
+
+### BREAKING CHANGES
+
+* update to dotnet 10
+
 # [3.0.0](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v2.3.0...v3.0.0) (2025-04-16)
 
 
