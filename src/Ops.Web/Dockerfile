@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/runtime-deps:10.0.9
+FROM mcr.microsoft.com/dotnet/runtime-deps:10.0.11
 
 # create work dir and set permissions as WORKDIR sets permissions as root
 RUN mkdir /app && chown -R app:app /app
