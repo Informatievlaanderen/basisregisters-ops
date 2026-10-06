@@ -78,6 +78,17 @@
             return Task.CompletedTask;
         }
 
+        public Task RetryJob(Job job, CancellationToken ct)
+        {
+            if (job.Status == JobStatus.Error)
+            {
+                job.Status = JobStatus.Created;
+                job.LastChanged = DateTimeOffset.Now;
+            }
+
+            return Task.CompletedTask;
+        }
+
         public Task ResolveJobRecordError(JobRecord jobRecord, CancellationToken ct)
         {
             if (jobRecord.Status == JobRecordStatus.Error)

@@ -109,6 +109,30 @@
             job.Status = JobStatus.Cancelled;
         }
 
+        public async Task RetryJob(Job job, CancellationToken ct)
+        {
+            if (job.Status != JobStatus.Error)
+            {
+                return;
+            }
+
+            var location = $"/v2/uploads/jobs/{job.Id}/retry";
+
+            _httpClient.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", await GetAccessToken($"{DvGrIngemetengebouwBeheerScope} {DvGrIngemetengebouwUitzonderingen}"));
+
+            var response = await _httpClient.PostAsync(location, null, ct);
+            response.EnsureSuccessStatusCode();
+
+            // The status after a retry depends on where the job failed (Created, Prepared or Processing), so fetch it again.
+            var jobResponse = await _httpClient.GetFromJsonAsync<JobResponse>($"/v2/uploads/jobs/{job.Id}", _jsonSerializerOptions, ct);
+            if (jobResponse is not null)
+            {
+                job.Status = jobResponse.Status;
+                job.LastChanged = jobResponse.LastChanged;
+            }
+        }
+
         public async Task ResolveJobRecordError(JobRecord jobRecord, CancellationToken ct)
         {
             if (jobRecord.Status != JobRecordStatus.Error)

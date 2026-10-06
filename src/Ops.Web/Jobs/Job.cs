@@ -25,6 +25,11 @@
             return Status is JobStatus.Created or JobStatus.Error;
         }
 
+        public bool CanRetry()
+        {
+            return Status is JobStatus.Error;
+        }
+
         public bool CanHaveRecords()
         {
             return Status != JobStatus.Created && Status != JobStatus.Cancelled;

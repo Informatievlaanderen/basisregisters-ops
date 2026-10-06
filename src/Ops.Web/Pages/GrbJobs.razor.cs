@@ -67,5 +67,10 @@
         {
             await JobsApiProxy.CancelJob(job, CancellationToken.None);
         }
+
+        private async Task Retry(Job job)
+        {
+            await JobsApiProxy.RetryJob(job, CancellationToken.None);
+        }
     }
 }
