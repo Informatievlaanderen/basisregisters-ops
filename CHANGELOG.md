@@ -1,3 +1,10 @@
+# [4.1.0](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v4.0.0...v4.1.0) (2026-10-07)
+
+
+### Features
+
+* add retry grbjob ([27fa631](https://github.com/Informatievlaanderen/basisregisters-ops/commit/27fa631819ab461bbdae1627c3457f79a6de11fa))
+
 # [4.0.0](https://github.com/Informatievlaanderen/basisregisters-ops/compare/v3.0.0...v4.0.0) (2026-06-12)
 
 
